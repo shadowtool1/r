@@ -187,7 +187,7 @@
         </div>
 
         <div id="attackTab" class="tab-content active">
-            <input type="text" id="phone" placeholder="+79001234567">
+            <input type="text" id="phone" placeholder="+375291234567">
             <button onclick="startAttack()">НАЧАТЬ АТАКУ</button>
             <div class="sub-info">
                 <div class="sub-label">ДО ОКОНЧАНИЯ ПОДПИСКИ</div>
@@ -390,7 +390,7 @@
         document.getElementById('authSuccess').innerText = '';
     }
 
-    // ========== АТАКА ==========
+    // ========== АТАКА (без проверки формата) ==========
     async function startAttack() {
         if (!currentSubscription) {
             addLog('У ВАС НЕТ АКТИВНОЙ ПОДПИСКИ!', true);
@@ -405,9 +405,9 @@
             return;
         }
         
-        const phoneRegex = /^(\+?[78]\d{10}$)|^(\+380\d{9}$)/;
-        if (!phoneRegex.test(phone.replace(/\s+/g, ''))) {
-            addLog('Неверный формат номера. Пример: +79001234567', true);
+        // Убираем проверку формата — принимаем любой номер с плюсом
+        if (!phone.startsWith('+')) {
+            addLog('Номер должен начинаться с + (пример: +375291234567)', true);
             return;
         }
 
@@ -427,7 +427,7 @@
             addLog('Не удалось проверить белый список', true);
         }
 
-        addLog('Начинаю атаку...');
+        addLog(`Начинаю атаку на ${phone}`);
         document.getElementById('status').innerHTML = 'АТАКА...';
         
         let success = 0;
