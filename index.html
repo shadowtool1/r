@@ -194,7 +194,7 @@
 <body>
 <div class="container" id="app">
     <h1>⚡ SHADOW TOOL</h1>
-    <div class="author">by Amnesia</div>
+    <div class="author">v3.0</div>
 
     <!-- Формы входа/регистрации -->
     <div id="authForms">
@@ -247,9 +247,7 @@
                 <h3 style="color:#00ff00;">🛡️ SHADOW TOOL v3.0</h3>
                 <p style="margin:10px 0; color:#ffffff;">Инструмент для тестирования SMS-флуда</p>
                 <hr style="border-color:#00ff00; margin:12px 0;">
-                <p><strong style="color:#00ff00;">👑 Админ:</strong> <span style="color:#ffffff;">@Amnesia</span></p>
                 <p><strong style="color:#00ff00;">💳 Подписка:</strong> <span id="subStatusText" style="color:#ffffff;">Проверка...</span></p>
-                <p><strong style="color:#00ff00;">📧 Связь:</strong> <span style="color:#ffffff;">@Amnesia</span></p>
             </div>
         </div>
     </div>
@@ -324,6 +322,7 @@
             });
             const data = await res.json();
             if (data.success) {
+                // Сохраняем токен в localStorage
                 localStorage.setItem('token', data.token);
                 currentToken = data.token;
                 await checkAuthAndLoad();
@@ -343,21 +342,25 @@
         }
         
         try {
+            // Проверяем токен через /me
             const meRes = await fetch(API_BASE + '/me', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             if (!meRes.ok) {
+                // Токен невалидный, удаляем
                 localStorage.removeItem('token');
                 showAuth();
                 return;
             }
             
+            // Проверяем подписку
             const subRes = await fetch(API_BASE + '/check_subscription', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const subData = await subRes.json();
             currentSubscription = subData.has_access;
             
+            // Показываем интерфейс
             showApp();
             updateHistoryDisplay();
             
@@ -369,6 +372,7 @@
                 document.getElementById('subStatusText').innerHTML = '❌ Отсутствует';
             }
         } catch(e) {
+            console.error('Auth error:', e);
             showAuth();
         }
     }
@@ -412,7 +416,7 @@
     // ========== АТАКА ==========
     async function startAttack() {
         if (!currentSubscription) {
-            addLog('⛔ У ВАС НЕТ АКТИВНОЙ ПОДПИСКИ! Обратитесь к администратору @Amnesia', true);
+            addLog('⛔ У ВАС НЕТ АКТИВНОЙ ПОДПИСКИ! Обратитесь к администратору', true);
             addLog('📌 Для использования инструмента необходимо приобрести подписку', true);
             return;
         }
@@ -504,7 +508,7 @@
         if (!tbody) return;
         
         if (total === 0) {
-            tbody.innerHTML = '<table><td colspan="4" style="color:#888; text-align:center;">📭 История атак пуста</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" style="color:#888; text-align:center;">📭 История атак пуста</td></tr>';
             return;
         }
         
