@@ -102,6 +102,7 @@
             word-break: break-all;
         }
         .error-log { border-left-color: #ff0000; color: #ff6666; }
+        .warning-log { border-left-color: #ffaa00; color: #ffcc66; }
         .status {
             position: fixed;
             bottom: 10px;
@@ -112,15 +113,6 @@
             color: #00ff00;
             font-size: 10px;
         }
-        .no-sub {
-            text-align: center;
-            padding: 30px;
-            background: #1a0000;
-            border: 2px solid #ff0000;
-            border-radius: 10px;
-        }
-        .no-sub h2 { color: #ff4444; margin-bottom: 15px; }
-        .no-sub p { color: #ff8888; margin-bottom: 20px; }
         .stats {
             display: flex;
             gap: 10px;
@@ -175,18 +167,7 @@
         <div id="authSuccess" style="color:#00ff00; text-align:center; margin-top:10px;"></div>
     </div>
 
-    <!-- Нет подписки -->
-    <div id="noSubscription" style="display:none;">
-        <div class="no-sub">
-            <h2>⛔ ДОСТУП ЗАКРЫТ</h2>
-            <p>У вас нет активной подписки.</p>
-            <p>Обратитесь к администратору:<br>Telegram: <strong>@Amnesia</strong></p>
-            <p style="font-size:12px;">После получения подписки войдите заново</p>
-            <button onclick="logout()" style="background:#ff4444; color:#fff;">ВЫЙТИ</button>
-        </div>
-    </div>
-
-    <!-- Основной контент (виден только с подпиской) -->
+    <!-- Основной контент (доступен после входа, даже без подписки) -->
     <div id="mainContent" style="display:none;">
         <div class="tabs">
             <div class="tab-btn active" onclick="switchTab('attack')">АТАКА</div>
@@ -221,7 +202,7 @@
                 <hr style="border-color:#00ff00; margin:10px 0;">
                 <p><strong>Админ:</strong> @Amnesia</p>
                 <p><strong>Версия:</strong> 3.0</p>
-                <p><strong>Статус:</strong> Подписка активна</p>
+                <p><strong>Подписка:</strong> <span id="subStatusText">Проверка...</span></p>
             </div>
         </div>
     </div>
@@ -247,8 +228,9 @@
 
     let attackHistory = JSON.parse(localStorage.getItem('shadow_history')) || [];
     let currentToken = localStorage.getItem('token');
+    let currentSubscription = false;
 
-    // ========== ФУНКЦИИ ==========
+    // ========== АВТОРИЗАЦИЯ ==========
     async function doRegister() {
         const login = document.getElementById('regLogin').value;
         const password = document.getElementById('regPassword').value;
@@ -297,7 +279,7 @@
             if (data.success) {
                 localStorage.setItem('token', data.token);
                 currentToken = data.token;
-                await checkSubscriptionAndAccess();
+                await checkAuthAndLoad();
             } else {
                 showAuthError(data.error);
             }
@@ -306,7 +288,7 @@
         }
     }
 
-    async function checkSubscriptionAndAccess() {
+    async function checkAuthAndLoad() {
         const token = localStorage.getItem('token');
         if (!token) {
             showAuth();
@@ -329,14 +311,18 @@
                 headers: { 'Authorization': 'Bearer ' + token }
             });
             const subData = await subRes.json();
+            currentSubscription = subData.has_access;
             
-            if (subData.has_access) {
-                showApp();
-                updateHistoryDisplay();
-                document.getElementById('status').innerHTML = '✅ АКТИВЕН';
+            // Показываем основной интерфейс (даже без подписки)
+            showApp();
+            updateHistoryDisplay();
+            
+            if (currentSubscription) {
+                document.getElementById('status').innerHTML = '✅ ПОДПИСКА ЕСТЬ';
+                document.getElementById('subStatusText').innerHTML = '✅ Активна';
             } else {
-                showNoSubscription();
-                document.getElementById('status').innerHTML = '⛔ НЕТ ПОДПИСКИ';
+                document.getElementById('status').innerHTML = '⚠️ НЕТ ПОДПИСКИ';
+                document.getElementById('subStatusText').innerHTML = '❌ Отсутствует (атаки заблокированы)';
             }
         } catch(e) {
             showAuth();
@@ -346,13 +332,13 @@
     function logout() {
         localStorage.removeItem('token');
         currentToken = null;
+        currentSubscription = false;
         showAuth();
         document.getElementById('status').innerHTML = '⏳ ЗАГРУЗКА';
     }
 
     function showAuth() {
         document.getElementById('authForms').style.display = 'block';
-        document.getElementById('noSubscription').style.display = 'none';
         document.getElementById('mainContent').style.display = 'none';
         document.getElementById('loginForm').style.display = 'block';
         document.getElementById('registerForm').style.display = 'none';
@@ -360,15 +346,8 @@
         document.getElementById('authSuccess').innerText = '';
     }
 
-    function showNoSubscription() {
-        document.getElementById('authForms').style.display = 'none';
-        document.getElementById('noSubscription').style.display = 'block';
-        document.getElementById('mainContent').style.display = 'none';
-    }
-
     function showApp() {
         document.getElementById('authForms').style.display = 'none';
-        document.getElementById('noSubscription').style.display = 'none';
         document.getElementById('mainContent').style.display = 'block';
     }
 
@@ -394,19 +373,24 @@
         document.getElementById('authSuccess').innerText = '';
     }
 
-    // ========== АТАКА ==========
+    // ========== АТАКА (с проверкой подписки) ==========
     async function startAttack() {
+        // Проверка подписки перед атакой
+        if (!currentSubscription) {
+            addLog('⛔ У ВАС НЕТ АКТИВНОЙ ПОДПИСКИ! Обратитесь к администратору @Amnesia', true);
+            addLog('📌 Для атак необходимо приобрести подписку', true);
+            return;
+        }
+        
         const phone = document.getElementById('phone').value.trim();
         const logsDiv = document.getElementById('logs');
         logsDiv.innerHTML = '';
         
-        // Проверка на пустой номер
         if (!phone) {
             addLog('❌ Введите номер телефона', true);
             return;
         }
         
-        // Проверка формата
         const phoneRegex = /^(\+?[78]\d{10}$)|^(\+380\d{9}$)/;
         if (!phoneRegex.test(phone.replace(/\s+/g, ''))) {
             addLog('❌ Неверный формат номера. Пример: +79001234567', true);
@@ -460,7 +444,7 @@
         localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
         
         addLog(`🎯 АТАКА ЗАВЕРШЕНА! Успешно: ${success}/${ATTACK_URLS.length}`);
-        document.getElementById('status').innerHTML = '✅ ГОТОВ';
+        document.getElementById('status').innerHTML = currentSubscription ? '✅ ПОДПИСКА ЕСТЬ' : '⚠️ НЕТ ПОДПИСКИ';
         updateHistoryDisplay();
         document.getElementById('phone').value = '';
     }
@@ -531,7 +515,7 @@
     }
 
     // ========== ЗАПУСК ==========
-    checkSubscriptionAndAccess();
+    checkAuthAndLoad();
 </script>
 </body>
 </html>
