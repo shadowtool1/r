@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -32,6 +32,27 @@
             font-family: 'Roboto', 'Segoe UI', sans-serif;
             min-height: 100vh;
             overflow-x: hidden;
+        }
+
+        .support-btn {
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            background: #000000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 10px 18px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+            z-index: 100;
+            transition: all 0.3s;
+            backdrop-filter: blur(5px);
+        }
+        .support-btn:hover {
+            background: #00ff00;
+            color: #000000;
         }
 
         .star-field {
@@ -69,6 +90,7 @@
             margin-bottom: 25px;
             gap: 8px;
             flex-wrap: wrap;
+            margin-top: 10px;
         }
         .tab-btn {
             background: #000000;
@@ -231,7 +253,23 @@
             border-radius: 10px;
         }
         .tutorial-step h3 { color: #00ff00; margin-top: 0; }
-        .tutorial-step p { color: #ffffff; }
+        .tutorial-step p { color: #ffffff; margin: 8px 0; }
+        .tutorial-link {
+            display: inline-block;
+            background: #000000;
+            border: 1px solid #00ff00;
+            color: #00ff00;
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 12px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+        .tutorial-link:hover {
+            background: #00ff00;
+            color: #000000;
+        }
 
         .history-table { width: 100%; font-size: 12px; border-collapse: collapse; }
         .history-table th, .history-table td { padding: 8px; border-bottom: 1px solid #333; text-align: left; color: #fff; }
@@ -280,10 +318,14 @@
             .glitch { font-size: 1.8em; }
             .profile-field { flex-direction: column; text-align: center; }
             .profile-value { text-align: center; }
+            .support-btn { padding: 6px 12px; font-size: 11px; top: 10px; right: 10px; }
+            .tabs { margin-top: 40px; }
         }
     </style>
 </head>
 <body>
+<a href="https://telegram.org/support" class="support-btn" target="_blank">🆘 Поддержка Telegram</a>
+
 <div class="star-field" id="starField"></div>
 
 <!-- Формы авторизации -->
@@ -346,7 +388,7 @@
         </div>
     </div>
 
-    <!-- ПРОФИЛЬ (с подпиской) -->
+    <!-- ПРОФИЛЬ -->
     <div id="profileTab" class="tab-content">
         <div class="profile-info">
             <div class="profile-field">
@@ -384,18 +426,22 @@
             <div class="tutorial-step">
                 <h3>📌 ШАГ 1: Регистрация</h3>
                 <p>Создайте аккаунт на сайте — введите логин и пароль, затем войдите.</p>
+                <a href="https://t.me/fallsfack" class="tutorial-link" target="_blank">📱 Чат поддержки</a>
             </div>
             <div class="tutorial-step">
                 <h3>🔗 ШАГ 2: Привязка Telegram</h3>
                 <p>Перейдите в ПРОФИЛЬ → нажмите «Получить код» → отправьте код боту командой <code>/bind КОД</code></p>
+                <a href="https://t.me/shadowtool_bot" class="tutorial-link" target="_blank">🤖 Наш бот</a>
             </div>
             <div class="tutorial-step">
                 <h3>🎯 ШАГ 3: Атака</h3>
                 <p>Введите номер телефона и нажмите «Начать атаку». Или используйте команду бота <code>/a НОМЕР</code></p>
+                <a href="https://t.me/fallsfack" class="tutorial-link" target="_blank">📺 Видео-туториал</a>
             </div>
             <div class="tutorial-step">
                 <h3>💎 ШАГ 4: Подписка</h3>
                 <p>Для использования инструмента необходима подписка. Обратитесь к администратору.</p>
+                <a href="https://t.me/km_Jason" class="tutorial-link" target="_blank">👑 Связаться с админом</a>
             </div>
             <div class="tutorial-step" style="border-left-color:#ff4444;">
                 <h3 style="color:#ff4444;">⚠️ ВНИМАНИЕ</h3>
